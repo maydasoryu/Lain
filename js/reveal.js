@@ -1,77 +1,51 @@
-/* =============================================
-   PROJECT LAIN — REVEAL SYSTEM
-   ============================================= */
+/* Intersection Observer for Premium Section Scroll Reveal */
 
-export function initReveal() {
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  
-  if (prefersReducedMotion) {
-    document.querySelectorAll('.reveal, .reveal-3d, .reveal-3d-left, .reveal-3d-right, .reveal-3d-scale, .stagger').forEach(el => {
-      el.classList.add('visible');
-    });
-    return;
+export class RevealManager {
+  constructor() {
+    this.revealElements = document.querySelectorAll(".will-animate");
+    this.staggerContainers = document.querySelectorAll("[data-stagger]");
+    this.init();
   }
 
-  const observerOptions = {
-    root: null,
-    rootMargin: '0px 0px -10% 0px',
-    threshold: 0.15
-  };
+  init() {
+    // Check if user prefers reduced motion
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      // Instantly reveal all
+      this.revealElements.forEach(el => el.classList.add("revealed"));
+      return;
+    }
 
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        revealObserver.unobserve(entry.target);
-      }
+    // Set up observer with 25% visibility trigger point (threshold 0.25)
+    const observerOptions = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.15 // 15-25% threshold works best for tall viewport-sized elements
+    };
+
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("revealed");
+          
+          // Trigger nested stagger items if applicable
+          const staggerItems = entry.target.querySelectorAll(".stagger-item");
+          if (staggerItems.length > 0) {
+            staggerItems.forEach((item, index) => {
+              setTimeout(() => {
+                item.classList.add("revealed");
+              }, index * 100); // 100ms stagger delay as requested
+            });
+          }
+          
+          // Stop observing once animated (Animate Once)
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    this.revealElements.forEach(el => {
+      revealObserver.observe(el);
     });
-  }, observerOptions);
-
-  // Observe all reveal elements
-  const revealElements = document.querySelectorAll('.reveal, .reveal-3d, .reveal-3d-left, .reveal-3d-right, .reveal-3d-scale');
-  revealElements.forEach(el => revealObserver.observe(el));
-
-  // Stagger animations
-  const staggerParents = document.querySelectorAll('[class*="stagger-"]');
-  const uniqueParents = new Set();
-  
-  staggerParents.forEach(el => {
-    const parent = el.closest('.reveal, .reveal-3d, section, .rom-info, .hero-content');
-    if (parent) uniqueParents.add(parent);
-  });
-
-  const staggerObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const staggerElements = entry.target.querySelectorAll('.stagger');
-        staggerElements.forEach(el => el.classList.add('visible'));
-        staggerObserver.unobserve(entry.target);
-      }
-    });
-  }, observerOptions);
-
-  uniqueParents.forEach(parent => staggerObserver.observe(parent));
-
-  // Text split animations
-  const textSplitObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        textSplitObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.3 });
-
-  document.querySelectorAll('.text-split').forEach(el => textSplitObserver.observe(el));
-}
-
-export function revealElement(element) {
-  if (!element) return;
-  element.classList.add('visible');
-}
-
-export function resetReveal() {
-  document.querySelectorAll('.reveal, .reveal-3d, .reveal-3d-left, .reveal-3d-right, .reveal-3d-scale, .stagger, .text-split').forEach(el => {
-    el.classList.remove('visible');
-  });
+  }
 }

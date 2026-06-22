@@ -1,232 +1,178 @@
-/* =============================================
-   PROJECT LAIN — CAROUSEL
-   ============================================= */
+/* ROM Carousel with Touch, Mouse Drag, Keyboard & Slide Effects */
 
-let carouselState = {
-  currentIndex: 0,
-  totalItems: 0,
-  isAnimating: false,
-  startX: 0,
-  startY: 0,
-  deltaX: 0,
-  deltaY: 0
-};
-
-let touchStartTime = 0;
-
-export function initCarousel() {
-  const track = document.querySelector('.carousel-track');
-  const prevBtn = document.querySelector('.carousel-btn--prev');
-  const nextBtn = document.querySelector('.carousel-btn--next');
-  
-  if (!track) return;
-
-  const cards = track.querySelectorAll('.carousel-card');
-  carouselState.totalItems = cards.length;
-  carouselState.currentIndex = 0;
-
-  // Update initial state
-  updateCarousel();
-
-  // Button events
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => goToPrev());
-  }
-  
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => goToNext());
+export class RomCarousel {
+  constructor() {
+    this.container = document.querySelector(".rom-carousel-viewport");
+    this.track = document.querySelector(".rom-carousel-track");
+    this.prevBtn = document.getElementById("rom-prev");
+    this.nextBtn = document.getElementById("rom-next");
+    
+    this.currentIndex = 0;
+    this.cards = [];
+    
+    this.startX = 0;
+    this.currentTranslate = 0;
+    this.prevTranslate = 0;
+    this.isDragging = false;
+    
+    this.init();
   }
 
-  // Mouse drag events
-  track.addEventListener('mousedown', handleDragStart);
-  track.addEventListener('mousemove', handleDragMove);
-  track.addEventListener('mouseup', handleDragEnd);
-  track.addEventListener('mouseleave', handleDragEnd);
+  init() {
+    this.cards = Array.from(document.querySelectorAll(".carousel-rom-card"));
+    if (this.cards.length === 0) return;
 
-  // Touch events
-  track.addEventListener('touchstart', handleTouchStart, { passive: true });
-  track.addEventListener('touchmove', handleTouchMove, { passive: true });
-  track.addEventListener('touchend', handleTouchEnd);
+    this.updateCarousel();
 
-  // Keyboard navigation
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') goToPrev();
-    if (e.key === 'ArrowRight') goToNext();
-  });
+    // Controls
+    if (this.prevBtn) {
+      this.prevBtn.addEventListener("click", () => this.slidePrev());
+    }
+    if (this.nextBtn) {
+      this.nextBtn.addEventListener("click", () => this.slideNext());
+    }
 
-  // Click on cards
-  cards.forEach((card, index) => {
-    card.addEventListener('click', () => {
-      if (index !== carouselState.currentIndex) {
-        goToSlide(index);
+    // Keyboard support
+    window.addEventListener("keydown", (e) => this.handleKeyDown(e));
+
+    // Touch support
+    this.track.addEventListener("touchstart", (e) => this.dragStart(e), { passive: true });
+    this.track.addEventListener("touchend", () => this.dragEnd());
+    this.track.addEventListener("touchmove", (e) => this.dragAction(e), { passive: true });
+
+    // Mouse drag support
+    this.track.addEventListener("mousedown", (e) => this.dragStart(e));
+    this.track.addEventListener("mouseup", () => this.dragEnd());
+    this.track.addEventListener("mouseleave", () => { if (this.isDragging) this.dragEnd(); });
+    this.track.addEventListener("mousemove", (e) => this.dragAction(e));
+
+    // Window resize observer
+    window.addEventListener("resize", () => this.updateCarousel(), { passive: true });
+  }
+
+  updateCarousel() {
+    if (this.cards.length === 0) return;
+
+    // Boundary protection
+    if (this.currentIndex < 0) this.currentIndex = 0;
+    if (this.currentIndex >= this.cards.length) this.currentIndex = this.cards.length - 1;
+
+    // Apply active class
+    this.cards.forEach((card, index) => {
+      card.classList.remove("active");
+      if (index === this.currentIndex) {
+        card.classList.add("active");
       }
     });
-  });
 
-  // Resize handler
-  window.addEventListener('resize', handleResize);
-}
-
-function updateCarousel() {
-  const track = document.querySelector('.carousel-track');
-  const cards = track?.querySelectorAll('.carousel-card');
-  const prevBtn = document.querySelector('.carousel-btn--prev');
-  const nextBtn = document.querySelector('.carousel-btn--next');
-  
-  if (!cards || cards.length === 0) return;
-
-  // Update card states
-  cards.forEach((card, index) => {
-    card.classList.remove('active');
+    // Calculate middle offset
+    const viewportWidth = this.container.offsetWidth;
+    const trackWidth = this.track.offsetWidth;
+    const activeCard = this.cards[this.currentIndex];
     
-    if (index === carouselState.currentIndex) {
-      card.classList.add('active');
-    }
-  });
+    if (!activeCard) return;
 
-  // Center the active card
-  const activeCard = cards[carouselState.currentIndex];
-  if (activeCard && track) {
-    const trackRect = track.getBoundingClientRect();
-    const cardRect = activeCard.getBoundingClientRect();
-    const scrollLeft = activeCard.offsetLeft - (trackRect.width / 2) + (cardRect.width / 2);
+    const cardWidth = activeCard.offsetWidth;
+    const cardOffsetLeft = activeCard.offsetLeft;
     
-    track.style.transform = `translateX(-${scrollLeft}px)`;
-  }
+    // Position active card exactly in the middle of viewport
+    const targetTranslate = -(cardOffsetLeft - (viewportWidth - cardWidth) / 2);
+    
+    this.track.style.transform = `translateX(${targetTranslate}px)`;
+    this.currentTranslate = targetTranslate;
+    this.prevTranslate = targetTranslate;
 
-  // Update button states
-  if (prevBtn) {
-    prevBtn.disabled = carouselState.currentIndex === 0;
-  }
-  if (nextBtn) {
-    nextBtn.disabled = carouselState.currentIndex === carouselState.totalItems - 1;
-  }
-}
-
-function goToPrev() {
-  if (carouselState.isAnimating || carouselState.currentIndex === 0) return;
-  
-  carouselState.isAnimating = true;
-  carouselState.currentIndex--;
-  updateCarousel();
-  
-  setTimeout(() => {
-    carouselState.isAnimating = false;
-  }, 800);
-}
-
-function goToNext() {
-  if (carouselState.isAnimating || carouselState.currentIndex === carouselState.totalItems - 1) return;
-  
-  carouselState.isAnimating = true;
-  carouselState.currentIndex++;
-  updateCarousel();
-  
-  setTimeout(() => {
-    carouselState.isAnimating = false;
-  }, 800);
-}
-
-function goToSlide(index) {
-  if (carouselState.isAnimating || index === carouselState.currentIndex) return;
-  if (index < 0 || index >= carouselState.totalItems) return;
-  
-  carouselState.isAnimating = true;
-  carouselState.currentIndex = index;
-  updateCarousel();
-  
-  setTimeout(() => {
-    carouselState.isAnimating = false;
-  }, 800);
-}
-
-function handleDragStart(e) {
-  if (e.target.closest('.carousel-btn')) return;
-  
-  carouselState.startX = e.clientX;
-  carouselState.startY = e.clientY;
-  track?.classList.add('dragging');
-}
-
-function handleDragMove(e) {
-  if (!carouselState.startX) return;
-  
-  carouselState.deltaX = e.clientX - carouselState.startX;
-  carouselState.deltaY = e.clientY - carouselState.startY;
-}
-
-function handleDragEnd(e) {
-  const track = document.querySelector('.carousel-track');
-  track?.classList.remove('dragging');
-  
-  if (Math.abs(carouselState.deltaX) > 50 && Math.abs(carouselState.deltaX) > Math.abs(carouselState.deltaY)) {
-    if (carouselState.deltaX > 0) {
-      goToPrev();
-    } else {
-      goToNext();
+    // Disable/Enable buttons if at boundaries
+    if (this.prevBtn) {
+      this.prevBtn.style.opacity = this.currentIndex === 0 ? "0.3" : "1";
+      this.prevBtn.style.pointerEvents = this.currentIndex === 0 ? "none" : "auto";
+    }
+    if (this.nextBtn) {
+      this.nextBtn.style.opacity = this.currentIndex === this.cards.length - 1 ? "0.3" : "1";
+      this.nextBtn.style.pointerEvents = this.currentIndex === this.cards.length - 1 ? "none" : "auto";
     }
   }
-  
-  carouselState.startX = 0;
-  carouselState.startY = 0;
-  carouselState.deltaX = 0;
-  carouselState.deltaY = 0;
-}
 
-function handleTouchStart(e) {
-  touchStartTime = Date.now();
-  carouselState.startX = e.touches[0].clientX;
-  carouselState.startY = e.touches[0].clientY;
-}
-
-function handleTouchMove(e) {
-  if (!carouselState.startX) return;
-  
-  const touch = e.touches[0];
-  carouselState.deltaX = touch.clientX - carouselState.startX;
-  carouselState.deltaY = touch.clientY - carouselState.startY;
-}
-
-function handleTouchEnd(e) {
-  const touchDuration = Date.now() - touchStartTime;
-  
-  // Detect swipe
-  const isHorizontalSwipe = Math.abs(carouselState.deltaX) > Math.abs(carouselState.deltaY);
-  const isQuickSwipe = touchDuration < 300;
-  
-  if (isHorizontalSwipe && Math.abs(carouselState.deltaX) > 50) {
-    if (carouselState.deltaX > 0) {
-      goToPrev();
-    } else {
-      goToNext();
-    }
-  } else if (isQuickSwipe && Math.abs(carouselState.deltaX) > 20) {
-    if (carouselState.deltaX > 0) {
-      goToPrev();
-    } else {
-      goToNext();
+  slidePrev() {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+      this.updateCarousel();
+      this.syncDetailSection();
     }
   }
-  
-  carouselState.startX = 0;
-  carouselState.startY = 0;
-  carouselState.deltaX = 0;
-  carouselState.deltaY = 0;
-}
 
-function handleResize() {
-  // Debounce resize handling
-  clearTimeout(window.carouselResizeTimeout);
-  window.carouselResizeTimeout = setTimeout(() => {
-    updateCarousel();
-  }, 250);
-}
+  slideNext() {
+    if (this.currentIndex < this.cards.length - 1) {
+      this.currentIndex++;
+      this.updateCarousel();
+      this.syncDetailSection();
+    }
+  }
 
-// Export for external use
-export function getCarouselState() {
-  return { ...carouselState };
-}
+  handleKeyDown(e) {
+    // Only slide if carousel is somewhat in viewport
+    const rect = this.container.getBoundingClientRect();
+    const inViewport = (rect.top < window.innerHeight && rect.bottom > 0);
+    if (!inViewport) return;
 
-export function setCarouselIndex(index) {
-  goToSlide(index);
+    if (e.key === "ArrowLeft") {
+      this.slidePrev();
+    } else if (e.key === "ArrowRight") {
+      this.slideNext();
+    }
+  }
+
+  // Touch & Drag Logistics
+  dragStart(e) {
+    this.isDragging = true;
+    this.track.style.transition = "none";
+    this.startX = this.getPositionX(e);
+  }
+
+  dragAction(e) {
+    if (!this.isDragging) return;
+    const currentX = this.getPositionX(e);
+    const diff = currentX - this.startX;
+    this.track.style.transform = `translateX(${this.prevTranslate + diff}px)`;
+    this.currentTranslate = this.prevTranslate + diff;
+  }
+
+  dragEnd() {
+    if (!this.isDragging) return;
+    this.isDragging = false;
+    this.track.style.transition = "transform 800ms cubic-bezier(0.22, 1, 0.36, 1)";
+    
+    const moveDistance = this.currentTranslate - this.prevTranslate;
+
+    // Swipe sensitivity threshold
+    if (moveDistance < -80 && this.currentIndex < this.cards.length - 1) {
+      this.currentIndex++;
+    } else if (moveDistance > 80 && this.currentIndex > 0) {
+      this.currentIndex--;
+    }
+
+    this.updateCarousel();
+    this.syncDetailSection();
+  }
+
+  getPositionX(e) {
+    return e.type.includes("touch") ? e.touches[0].clientX : e.clientX;
+  }
+
+  syncDetailSection() {
+    // Custom sync event to jump detail view or highlight active card details
+    const activeCardId = this.cards[this.currentIndex].getAttribute("data-rom-id");
+    const detailSection = document.getElementById(`detail-${activeCardId}`);
+    if (detailSection) {
+      detailSection.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+
+  slideToRom(romId) {
+    const targetIndex = this.cards.findIndex(card => card.getAttribute("data-rom-id") === romId);
+    if (targetIndex !== -1) {
+      this.currentIndex = targetIndex;
+      this.updateCarousel();
+    }
+  }
 }

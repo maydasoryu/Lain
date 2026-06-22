@@ -1,123 +1,83 @@
-/* =============================================
-   PROJECT LAIN — PARALLAX
-   ============================================= */
+/* Subtle 3D Tilt Effect and Smooth Interpolating Cursor Glow Follower */
 
-let parallaxState = {
-  isEnabled: true,
-  elements: [],
-  ticking: false
-};
-
-export function initParallax() {
-  // Check reduced motion preference
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    parallaxState.isEnabled = false;
-    return;
+export class ParallaxManager {
+  constructor() {
+    this.heroCard = document.querySelector(".hero-image-showcase");
+    this.cursorGlow = document.querySelector(".cursor-glow");
+    
+    this.cursorX = 0;
+    this.cursorY = 0;
+    this.currentX = 0;
+    this.currentY = 0;
+    
+    this.init();
   }
 
-  // Check touch device
-  if (window.matchMedia('(hover: none)').matches) {
-    parallaxState.isEnabled = false;
-    return;
-  }
+  init() {
+    // Check constraints
+    const isMobile = window.innerWidth <= 768;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Find all parallax elements
-  const parallaxElements = document.querySelectorAll('[data-parallax]');
-  
-  parallaxElements.forEach(el => {
-    const speed = parseFloat(el.dataset.parallax) || 0.5;
-    parallaxState.elements.push({
-      element: el,
-      speed: speed,
-      y: 0
+    if (isMobile || prefersReducedMotion) {
+      if (this.cursorGlow) this.cursorGlow.style.display = "none";
+      return;
+    }
+
+    // 3D Tilt on Hero card (desktop only)
+    if (this.heroCard) {
+      this.heroCard.addEventListener("mousemove", (e) => this.handleTilt(e));
+      this.heroCard.addEventListener("mouseleave", () => this.resetTilt());
+    }
+
+    // Cursor Follower
+    window.addEventListener("mousemove", (e) => {
+      this.cursorX = e.clientX;
+      this.cursorY = e.clientY;
+      if (this.cursorGlow) this.cursorGlow.style.opacity = "1";
     });
-  });
 
-  // Background zoom effect
-  initBackgroundZoom();
+    window.addEventListener("mouseleave", () => {
+      if (this.cursorGlow) this.cursorGlow.style.opacity = "0";
+    });
 
-  // Bind scroll event
-  window.addEventListener('scroll', onParallaxScroll, { passive: true });
-
-  // Initialize positions
-  onParallaxScroll();
-}
-
-function onParallaxScroll() {
-  if (!parallaxState.isEnabled) return;
-  
-  if (!parallaxState.ticking) {
-    requestAnimationFrame(updateParallax);
-    parallaxState.ticking = true;
+    this.animateCursorGlow();
   }
-}
 
-function updateParallax() {
-  const scrollY = window.scrollY;
-
-  // Update parallax elements
-  parallaxState.elements.forEach(item => {
-    const rect = item.element.getBoundingClientRect();
-    const centerY = rect.top + rect.height / 2;
-    const viewportCenterY = window.innerHeight / 2;
-    const offset = (centerY - viewportCenterY) * item.speed;
+  handleTilt(e) {
+    if (!this.heroCard) return;
     
-    item.element.style.transform = `translate3d(0, ${offset}px, 0)`;
-  });
-
-  parallaxState.ticking = false;
-}
-
-function initBackgroundZoom() {
-  const backgroundVideo = document.querySelector('.background-video');
-  const backgroundFallback = document.querySelector('.background-fallback');
-  
-  if (!backgroundVideo && !backgroundFallback) return;
-
-  const zoomElement = backgroundVideo || backgroundFallback;
-  
-  let lastScrollY = 0;
-  
-  const updateZoom = () => {
-    const scrollY = window.scrollY;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const scrollProgress = docHeight > 0 ? scrollY / docHeight : 0;
+    const rect = this.heroCard.getBoundingClientRect();
+    const x = e.clientX - rect.left; // x position inside element
+    const y = e.clientY - rect.top;  // y position inside element
     
-    // Scale from 1 to 1.05 based on scroll progress
-    const scale = 1 + (scrollProgress * 0.05);
-    zoomElement.style.transform = `scale(${scale})`;
+    // Normalize coordinates: -0.5 to 0.5
+    const normalizedX = (x / rect.width) - 0.5;
+    const normalizedY = (y / rect.height) - 0.5;
     
-    lastScrollY = scrollY;
-  };
+    // Max tilt 4 degrees as requested
+    const maxTilt = 4;
+    const rotateY = normalizedX * maxTilt;
+    const rotateX = -normalizedY * maxTilt;
+    
+    this.heroCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+  }
 
-  window.addEventListener('scroll', () => {
-    requestAnimationFrame(updateZoom);
-  }, { passive: true });
-}
+  resetTilt() {
+    if (!this.heroCard) return;
+    this.heroCard.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+  }
 
-// Manual parallax control
-export function setParallaxEnabled(enabled) {
-  parallaxState.isEnabled = enabled;
-}
+  animateCursorGlow() {
+    if (!this.cursorGlow) return;
 
-export function addParallaxElement(element, speed = 0.5) {
-  if (!element) return;
-  
-  parallaxState.elements.push({
-    element,
-    speed,
-    y: 0
-  });
-}
+    // Linear interpolation (lerp) for ultra-smooth follow effect
+    const ease = 0.08; 
+    this.currentX += (this.cursorX - this.currentX) * ease;
+    this.currentY += (this.cursorY - this.currentY) * ease;
 
-export function removeParallaxElement(element) {
-  parallaxState.elements = parallaxState.elements.filter(
-    item => item.element !== element
-  );
-}
+    this.cursorGlow.style.left = `${this.currentX}px`;
+    this.cursorGlow.style.top = `${this.currentY}px`;
 
-// Cleanup
-export function destroyParallax() {
-  parallaxState.elements = [];
-  window.removeEventListener('scroll', onParallaxScroll);
+    requestAnimationFrame(() => this.animateCursorGlow());
+  }
 }
