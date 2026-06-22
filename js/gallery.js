@@ -1,77 +1,121 @@
-/**
- * gallery.js — Screenshot gallery with swipe and fullscreen.
- */
-document.addEventListener("DOMContentLoaded", () => {
-  const track = document.getElementById("gallery-track");
-  if (!track) return;
+/* =============================================
+   PROJECT LAIN — GALLERY
+   ============================================= */
 
-  const items = track.querySelectorAll("[data-gallery-item]");
-  const prevBtn = document.getElementById("gallery-prev");
-  const nextBtn = document.getElementById("gallery-next");
-  const fullscreen = document.getElementById("gallery-fullscreen");
-  const fullscreenImg = document.getElementById("gallery-fullscreen-img");
-  const fullscreenClose = document.getElementById("gallery-fullscreen-close");
-  if (!items.length) return;
+let galleryState = {
+  currentIndex: 0,
+  items: []
+};
 
-  let currentIndex = 0;
+export function initGallery() {
+  const galleryOverlay = document.querySelector('.fullscreen-gallery');
+  const galleryItems = document.querySelectorAll('.gallery-item');
+  
+  if (!galleryOverlay || galleryItems.length === 0) return;
 
-  function updateGallery(newIndex) {
-    currentIndex = Math.max(0, Math.min(newIndex, items.length - 1));
-    const trackWidth = track.parentElement.offsetWidth;
-    const item = items[currentIndex];
-    const itemWidth = item.offsetWidth + 24;
-    const offset = -(item.offsetLeft - trackWidth / 2 + itemWidth / 2);
+  galleryState.items = Array.from(galleryItems);
+  galleryState.currentIndex = 0;
 
-    track.style.transition = `transform 800ms var(--ease-premium)`;
-    track.style.transform = `translateX(${offset}px)`;
-    items.forEach((el, i) => el.classList.toggle("is-active", i === currentIndex));
-  }
-
-  setTimeout(() => updateGallery(0), 300);
-
-  prevBtn?.addEventListener("click", () => {
-    updateGallery(currentIndex > 0 ? currentIndex - 1 : items.length - 1);
-  });
-
-  nextBtn?.addEventListener("click", () => {
-    updateGallery(currentIndex < items.length - 1 ? currentIndex + 1 : 0);
-  });
-
-  let startX = 0;
-  track.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX; }, { passive: true });
-  track.addEventListener("touchend", (e) => {
-    const diff = e.changedTouches[0].clientX - startX;
-    if (Math.abs(diff) > 50) {
-      if (diff < 0 && currentIndex < items.length - 1) updateGallery(currentIndex + 1);
-      else if (diff > 0 && currentIndex > 0) updateGallery(currentIndex - 1);
-    }
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (document.activeElement?.closest("#gallery-container")) {
-      if (e.key === "ArrowLeft" && currentIndex > 0) { e.preventDefault(); updateGallery(currentIndex - 1); }
-      if (e.key === "ArrowRight" && currentIndex < items.length - 1) { e.preventDefault(); updateGallery(currentIndex + 1); }
-    }
-    if (e.key === "Escape" && fullscreen?.classList.contains("is-visible")) closeFullscreen();
-  });
-
-  items.forEach(item => {
-    item.addEventListener("click", () => {
-      const img = item.querySelector("img");
-      if (img) {
-        fullscreenImg.src = img.src;
-        fullscreenImg.alt = img.alt;
-        fullscreen.classList.add("is-visible");
-        document.body.style.overflow = "hidden";
+  // Click to open fullscreen
+  galleryItems.forEach((item, index) => {
+    item.addEventListener('click', () => openFullscreen(index));
+    item.setAttribute('tabindex', '0');
+    item.setAttribute('role', 'button');
+    item.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openFullscreen(index);
       }
     });
   });
 
-  function closeFullscreen() {
-    fullscreen.classList.remove("is-visible");
-    document.body.style.overflow = "";
+  // Close button
+  const closeBtn = galleryOverlay.querySelector('.fullscreen-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeFullscreen);
   }
 
-  fullscreenClose?.addEventListener("click", closeFullscreen);
-  fullscreen?.addEventListener("click", (e) => { if (e.target === fullscreen) closeFullscreen(); });
-});
+  // Navigation buttons
+  const prevBtn = galleryOverlay.querySelector('.fullscreen-nav--prev');
+  const nextBtn = galleryOverlay.querySelector('.fullscreen-nav--next');
+
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => navigateFullscreen(-1));
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => navigateFullscreen(1));
+  }
+
+  // Click outside to close
+  galleryOverlay.addEventListener('click', (e) => {
+    if (e.target === galleryOverlay) {
+      closeFullscreen();
+    }
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (!galleryOverlay.classList.contains('active')) return;
+    
+    if (e.key === 'Escape') {
+      closeFullscreen();
+    } else if (e.key === 'ArrowLeft') {
+      navigateFullscreen(-1);
+    } else if (e.key === 'ArrowRight') {
+      navigateFullscreen(1);
+    }
+  });
+}
+
+function openFullscreen(index) {
+  const galleryOverlay = document.querySelector('.fullscreen-gallery');
+  const fullscreenImage = galleryOverlay?.querySelector('.fullscreen-image');
+  
+  if (!galleryOverlay || !fullscreenImage) return;
+
+  const item = galleryState.items[index];
+  const imageSrc = item?.dataset.src;
+
+  if (imageSrc) {
+    galleryState.currentIndex = index;
+    fullscreenImage.src = imageSrc;
+    galleryOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    const closeBtn = galleryOverlay.querySelector('.fullscreen-close');
+    if (closeBtn) closeBtn.focus();
+  }
+}
+
+function closeFullscreen() {
+  const galleryOverlay = document.querySelector('.fullscreen-gallery');
+  
+  if (galleryOverlay) {
+    galleryOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+}
+
+function navigateFullscreen(direction) {
+  const galleryOverlay = document.querySelector('.fullscreen-gallery');
+  const fullscreenImage = galleryOverlay?.querySelector('.fullscreen-image');
+  
+  if (!fullscreenImage) return;
+
+  const newIndex = galleryState.currentIndex + direction;
+  
+  if (newIndex >= 0 && newIndex < galleryState.items.length) {
+    galleryState.currentIndex = newIndex;
+    const item = galleryState.items[newIndex];
+    const imageSrc = item?.dataset.src;
+    
+    if (imageSrc) {
+      fullscreenImage.src = imageSrc;
+    }
+  }
+}
+
+export function getGalleryState() {
+  return { ...galleryState };
+}

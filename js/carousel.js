@@ -1,83 +1,232 @@
-/**
- * carousel.js — ROM carousel with touch, drag, keyboard.
- */
-document.addEventListener("DOMContentLoaded", () => {
-  const track = document.getElementById("carousel-track");
+/* =============================================
+   PROJECT LAIN — CAROUSEL
+   ============================================= */
+
+let carouselState = {
+  currentIndex: 0,
+  totalItems: 0,
+  isAnimating: false,
+  startX: 0,
+  startY: 0,
+  deltaX: 0,
+  deltaY: 0
+};
+
+let touchStartTime = 0;
+
+export function initCarousel() {
+  const track = document.querySelector('.carousel-track');
+  const prevBtn = document.querySelector('.carousel-btn--prev');
+  const nextBtn = document.querySelector('.carousel-btn--next');
+  
   if (!track) return;
 
-  const cards = track.querySelectorAll("[data-card]");
-  const prevBtn = document.getElementById("carousel-prev");
-  const nextBtn = document.getElementById("carousel-next");
-  const dots = document.querySelectorAll(".carousel__dot");
-  if (!cards.length) return;
+  const cards = track.querySelectorAll('.carousel-card');
+  carouselState.totalItems = cards.length;
+  carouselState.currentIndex = 0;
 
-  let currentIndex = 0;
-  let isDragging = false;
-  let startX = 0;
+  // Update initial state
+  updateCarousel();
 
-  function updateCarousel(newIndex, animate = true) {
-    currentIndex = Math.max(0, Math.min(newIndex, cards.length - 1));
-    const offset = -(currentIndex * 80);
-
-    track.style.transition = animate ? `transform 800ms var(--ease-premium)` : "none";
-    track.style.transform = `translateX(${offset}%)`;
-
-    cards.forEach((card, i) => card.classList.toggle("is-active", i === currentIndex));
-    dots.forEach((dot, i) => dot.classList.toggle("is-active", i === currentIndex));
+  // Button events
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => goToPrev());
+  }
+  
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => goToNext());
   }
 
-  setTimeout(() => updateCarousel(0, false), 100);
+  // Mouse drag events
+  track.addEventListener('mousedown', handleDragStart);
+  track.addEventListener('mousemove', handleDragMove);
+  track.addEventListener('mouseup', handleDragEnd);
+  track.addEventListener('mouseleave', handleDragEnd);
 
-  prevBtn?.addEventListener("click", () => {
-    updateCarousel(currentIndex > 0 ? currentIndex - 1 : cards.length - 1);
+  // Touch events
+  track.addEventListener('touchstart', handleTouchStart, { passive: true });
+  track.addEventListener('touchmove', handleTouchMove, { passive: true });
+  track.addEventListener('touchend', handleTouchEnd);
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') goToPrev();
+    if (e.key === 'ArrowRight') goToNext();
   });
 
-  nextBtn?.addEventListener("click", () => {
-    updateCarousel(currentIndex < cards.length - 1 ? currentIndex + 1 : 0);
+  // Click on cards
+  cards.forEach((card, index) => {
+    card.addEventListener('click', () => {
+      if (index !== carouselState.currentIndex) {
+        goToSlide(index);
+      }
+    });
   });
 
-  dots.forEach((dot) => {
-    dot.addEventListener("click", () => updateCarousel(parseInt(dot.dataset.index)));
-  });
+  // Resize handler
+  window.addEventListener('resize', handleResize);
+}
 
-  document.addEventListener("keydown", (e) => {
-    if (document.activeElement?.closest("#rom-carousel")) {
-      if (e.key === "ArrowLeft") { e.preventDefault(); updateCarousel(currentIndex > 0 ? currentIndex - 1 : cards.length - 1); }
-      if (e.key === "ArrowRight") { e.preventDefault(); updateCarousel(currentIndex < cards.length - 1 ? currentIndex + 1 : 0); }
+function updateCarousel() {
+  const track = document.querySelector('.carousel-track');
+  const cards = track?.querySelectorAll('.carousel-card');
+  const prevBtn = document.querySelector('.carousel-btn--prev');
+  const nextBtn = document.querySelector('.carousel-btn--next');
+  
+  if (!cards || cards.length === 0) return;
+
+  // Update card states
+  cards.forEach((card, index) => {
+    card.classList.remove('active');
+    
+    if (index === carouselState.currentIndex) {
+      card.classList.add('active');
     }
   });
 
-  // Touch / Drag
-  function handleStart(e) {
-    isDragging = true;
-    startX = e.type === "touchstart" ? e.touches[0].clientX : e.clientX;
-    track.style.transition = "none";
+  // Center the active card
+  const activeCard = cards[carouselState.currentIndex];
+  if (activeCard && track) {
+    const trackRect = track.getBoundingClientRect();
+    const cardRect = activeCard.getBoundingClientRect();
+    const scrollLeft = activeCard.offsetLeft - (trackRect.width / 2) + (cardRect.width / 2);
+    
+    track.style.transform = `translateX(-${scrollLeft}px)`;
   }
 
-  function handleMove(e) {
-    if (!isDragging) return;
-    const currentX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
-    const diff = currentX - startX;
-    const baseOffset = -(currentIndex * 80);
-    const dragPercent = (diff / window.innerWidth) * 30;
-    track.style.transform = `translateX(${baseOffset + dragPercent}%)`;
+  // Update button states
+  if (prevBtn) {
+    prevBtn.disabled = carouselState.currentIndex === 0;
   }
-
-  function handleEnd(e) {
-    if (!isDragging) return;
-    isDragging = false;
-    const endX = e.type === "touchend" ? e.changedTouches[0].clientX : e.clientX;
-    const diff = endX - startX;
-
-    if (diff < -50 && currentIndex < cards.length - 1) updateCarousel(currentIndex + 1);
-    else if (diff > 50 && currentIndex > 0) updateCarousel(currentIndex - 1);
-    else updateCarousel(currentIndex);
+  if (nextBtn) {
+    nextBtn.disabled = carouselState.currentIndex === carouselState.totalItems - 1;
   }
+}
 
-  track.addEventListener("touchstart", handleStart, { passive: true });
-  track.addEventListener("touchmove", handleMove, { passive: false });
-  track.addEventListener("touchend", handleEnd);
-  track.addEventListener("mousedown", handleStart);
-  window.addEventListener("mousemove", handleMove);
-  window.addEventListener("mouseup", handleEnd);
-});
+function goToPrev() {
+  if (carouselState.isAnimating || carouselState.currentIndex === 0) return;
+  
+  carouselState.isAnimating = true;
+  carouselState.currentIndex--;
+  updateCarousel();
+  
+  setTimeout(() => {
+    carouselState.isAnimating = false;
+  }, 800);
+}
+
+function goToNext() {
+  if (carouselState.isAnimating || carouselState.currentIndex === carouselState.totalItems - 1) return;
+  
+  carouselState.isAnimating = true;
+  carouselState.currentIndex++;
+  updateCarousel();
+  
+  setTimeout(() => {
+    carouselState.isAnimating = false;
+  }, 800);
+}
+
+function goToSlide(index) {
+  if (carouselState.isAnimating || index === carouselState.currentIndex) return;
+  if (index < 0 || index >= carouselState.totalItems) return;
+  
+  carouselState.isAnimating = true;
+  carouselState.currentIndex = index;
+  updateCarousel();
+  
+  setTimeout(() => {
+    carouselState.isAnimating = false;
+  }, 800);
+}
+
+function handleDragStart(e) {
+  if (e.target.closest('.carousel-btn')) return;
+  
+  carouselState.startX = e.clientX;
+  carouselState.startY = e.clientY;
+  track?.classList.add('dragging');
+}
+
+function handleDragMove(e) {
+  if (!carouselState.startX) return;
+  
+  carouselState.deltaX = e.clientX - carouselState.startX;
+  carouselState.deltaY = e.clientY - carouselState.startY;
+}
+
+function handleDragEnd(e) {
+  const track = document.querySelector('.carousel-track');
+  track?.classList.remove('dragging');
+  
+  if (Math.abs(carouselState.deltaX) > 50 && Math.abs(carouselState.deltaX) > Math.abs(carouselState.deltaY)) {
+    if (carouselState.deltaX > 0) {
+      goToPrev();
+    } else {
+      goToNext();
+    }
+  }
+  
+  carouselState.startX = 0;
+  carouselState.startY = 0;
+  carouselState.deltaX = 0;
+  carouselState.deltaY = 0;
+}
+
+function handleTouchStart(e) {
+  touchStartTime = Date.now();
+  carouselState.startX = e.touches[0].clientX;
+  carouselState.startY = e.touches[0].clientY;
+}
+
+function handleTouchMove(e) {
+  if (!carouselState.startX) return;
+  
+  const touch = e.touches[0];
+  carouselState.deltaX = touch.clientX - carouselState.startX;
+  carouselState.deltaY = touch.clientY - carouselState.startY;
+}
+
+function handleTouchEnd(e) {
+  const touchDuration = Date.now() - touchStartTime;
+  
+  // Detect swipe
+  const isHorizontalSwipe = Math.abs(carouselState.deltaX) > Math.abs(carouselState.deltaY);
+  const isQuickSwipe = touchDuration < 300;
+  
+  if (isHorizontalSwipe && Math.abs(carouselState.deltaX) > 50) {
+    if (carouselState.deltaX > 0) {
+      goToPrev();
+    } else {
+      goToNext();
+    }
+  } else if (isQuickSwipe && Math.abs(carouselState.deltaX) > 20) {
+    if (carouselState.deltaX > 0) {
+      goToPrev();
+    } else {
+      goToNext();
+    }
+  }
+  
+  carouselState.startX = 0;
+  carouselState.startY = 0;
+  carouselState.deltaX = 0;
+  carouselState.deltaY = 0;
+}
+
+function handleResize() {
+  // Debounce resize handling
+  clearTimeout(window.carouselResizeTimeout);
+  window.carouselResizeTimeout = setTimeout(() => {
+    updateCarousel();
+  }, 250);
+}
+
+// Export for external use
+export function getCarouselState() {
+  return { ...carouselState };
+}
+
+export function setCarouselIndex(index) {
+  goToSlide(index);
+}

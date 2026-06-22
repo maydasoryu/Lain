@@ -1,77 +1,121 @@
-/**
- * navigation.js — Sticky nav, smooth scroll, mobile menu.
- */
-document.addEventListener("DOMContentLoaded", () => {
-  initScrollBehavior();
-  initMobileMenu();
-  initSmoothScroll();
-});
+/* =============================================
+   PROJECT LAIN — NAVIGATION
+   ============================================= */
 
-function initScrollBehavior() {
-  const nav = document.getElementById("main-nav");
+export function initNavigation(navElement, navLinks) {
+  if (!navElement) return;
+
+  let lastScrollY = 0;
   let ticking = false;
 
+  // Scroll-based navigation styling
   const updateNav = () => {
-    if (window.scrollY > 80) {
-      nav.classList.remove("is-transparent");
-      nav.classList.add("is-glass");
+    const scrollY = window.scrollY;
+    
+    if (scrollY > 80) {
+      navElement.classList.add('scrolled');
     } else {
-      nav.classList.add("is-transparent");
-      nav.classList.remove("is-glass");
+      navElement.classList.remove('scrolled');
     }
+    
+    lastScrollY = scrollY;
+    ticking = false;
   };
 
-  window.addEventListener("scroll", () => {
+  window.addEventListener('scroll', () => {
     if (!ticking) {
-      window.requestAnimationFrame(() => { updateNav(); ticking = false; });
+      requestAnimationFrame(updateNav);
       ticking = true;
     }
   }, { passive: true });
 
-  updateNav();
-}
-
-function initMobileMenu() {
-  const toggle = document.getElementById("nav-toggle");
-  const links = document.getElementById("nav-links");
-  if (!toggle || !links) return;
-
-  toggle.addEventListener("click", () => {
-    const isOpen = links.classList.toggle("is-open");
-    toggle.classList.toggle("is-active");
-    toggle.setAttribute("aria-expanded", isOpen);
-  });
-
-  links.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", () => {
-      links.classList.remove("is-open");
-      toggle.classList.remove("is-active");
-      toggle.setAttribute("aria-expanded", "false");
+  // Smooth anchor scrolling
+  if (navLinks && navLinks.length > 0) {
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        
+        if (href && href.startsWith('#')) {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          
+          if (target) {
+            const navHeight = navElement?.offsetHeight || 72;
+            const targetPosition = target.getBoundingClientRect().top + window.scrollY - navHeight;
+            
+            window.scrollTo({
+              top: targetPosition,
+              behavior: 'smooth'
+            });
+          }
+        }
+      });
     });
-  });
+  }
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && links.classList.contains("is-open")) {
-      links.classList.remove("is-open");
-      toggle.classList.remove("is-active");
-      toggle.setAttribute("aria-expanded", "false");
-      toggle.focus();
-    }
-  });
-}
-
-function initSmoothScroll() {
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener("click", (e) => {
-      const href = anchor.getAttribute("href");
-      if (href === "#") return;
-      const target = document.querySelector(href);
-      if (target) {
-        e.preventDefault();
-        const navHeight = 72;
-        const top = target.getBoundingClientRect().top + window.pageYOffset - navHeight;
-        window.scrollTo({ top, behavior: "smooth" });
+  // Active section highlighting
+  const sections = document.querySelectorAll('section[id]');
+  
+  const highlightNav = () => {
+    const scrollY = window.scrollY + 150;
+    
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop - 100;
+      const sectionHeight = section.offsetHeight;
+      const sectionId = section.getAttribute('id');
+      
+      if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+        navLinks?.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${sectionId}`) {
+            link.classList.add('active');
+          }
+        });
       }
     });
-  });
+  };
+
+  window.addEventListener('scroll', () => {
+    requestAnimationFrame(highlightNav);
+  }, { passive: true });
+
+  // Mobile menu toggle (for future expansion)
+  const initMobileMenu = () => {
+    const menuButton = document.createElement('button');
+    menuButton.className = 'mobile-menu-btn';
+    menuButton.setAttribute('aria-label', 'Toggle menu');
+    menuButton.innerHTML = `
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    `;
+    
+    const style = document.createElement('style');
+    style.textContent = `
+      .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--color-text-primary);
+        cursor: pointer;
+        padding: var(--space-sm);
+      }
+      
+      @media (max-width: 768px) {
+        .mobile-menu-btn {
+          display: flex;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    const navInner = navElement.querySelector('.nav-inner');
+    if (navInner) {
+      navInner.appendChild(menuButton);
+    }
+  };
+
+  initMobileMenu();
 }

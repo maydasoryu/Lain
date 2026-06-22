@@ -1,319 +1,557 @@
-/**
- * app.js — Main application initializer.
- * All content is rendered dynamically from data.js.
- */
-import { roms, techFeatures, communityLinks, siteConfig, navigationLinks } from "./data.js";
+/* =============================================
+   PROJECT LAIN — APP
+   ============================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
-  initIntroSequence();
-  renderNavigation();
-  renderHero();
-  renderTechnology();
-  renderCarousel();
-  renderROMDetails();
-  renderGallery();
-  renderCommunity();
-  renderFooter();
-});
+import { roms, techFeatures, metaPills, communityLinks } from './data.js';
+import { initNavigation } from './navigation.js';
+import { initReveal } from './reveal.js';
+import { initCarousel } from './carousel.js';
+import { initGallery } from './gallery.js';
+import { initModal } from './modal.js';
+import { initScroll } from './scroll.js';
+import { initAccessibility } from './accessibility.js';
 
-function initIntroSequence() {
-  const intro = document.getElementById("intro");
-  const introLogo = document.getElementById("intro-logo");
-  const heroImage = document.getElementById("hero-image-container");
-  const bgVideo = document.getElementById("bg-video");
+class ProjectLainApp {
+  constructor() {
+    this.elements = {};
+    this.state = {
+      currentCarouselIndex: 0,
+      scrollY: 0,
+      reducedMotion: false
+    };
+  }
 
-  if (bgVideo) bgVideo.play().catch(() => {});
+  init() {
+    this.checkReducedMotion();
+    this.cacheElements();
+    this.renderContent();
+    this.initBackground();
+    this.initIntroSequence();
+    this.initScrollEffects();
+    this.initAllModules();
+    this.bindEvents();
+  }
 
-  setTimeout(() => introLogo?.classList.add("is-visible"), 600);
-  setTimeout(() => intro?.classList.add("is-hidden"), 1800);
-  setTimeout(() => heroImage?.classList.add("is-visible"), 2000);
-  setTimeout(() => intro?.remove(), 2500);
-}
+  checkReducedMotion() {
+    this.state.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
 
-function renderNavigation() {
-  const container = document.getElementById("nav-links");
-  const template = document.getElementById("nav-link-template");
-  navigationLinks.forEach(link => {
-    const clone = template.content.cloneNode(true);
-    const anchor = clone.querySelector("[data-link]");
-    anchor.href = `#${link.id}`;
-    anchor.textContent = link.label;
-    container.appendChild(clone);
-  });
-}
+  cacheElements() {
+    this.elements = {
+      introOverlay: document.querySelector('.intro-overlay'),
+      introLogo: document.querySelector('.intro-logo'),
+      scrollProgress: document.querySelector('.scroll-progress'),
+      nav: document.querySelector('.nav'),
+      heroThumbnail: document.querySelector('.hero-thumbnail'),
+      backToTop: document.querySelector('.back-to-top'),
+      cursorGlow: document.querySelector('.cursor-glow'),
+      modalOverlay: document.querySelector('.modal-overlay'),
+      galleryOverlay: document.querySelector('.fullscreen-gallery'),
+      ambientGold: document.querySelector('.ambient-light--gold'),
+      ambientCrimson: document.querySelector('.ambient-light--crimson')
+    };
+  }
 
-function renderHero() {
-  document.getElementById("hero-title").textContent = siteConfig.name;
-  document.getElementById("hero-tagline").textContent = siteConfig.tagline;
+  renderContent() {
+    this.renderHero();
+    this.renderTechnology();
+    this.renderCarousel();
+    this.renderROMSections();
+    this.renderGallery();
+    this.renderCommunity();
+  }
 
-  const pillsEl = document.getElementById("hero-pills");
-  siteConfig.heroMetadata.forEach(text => {
-    const pill = document.createElement("span");
-    pill.className = "pill pill-text";
-    pill.textContent = text;
-    pillsEl.appendChild(pill);
-  });
+  renderHero() {
+    const heroContent = document.querySelector('.hero-content');
+    if (!heroContent) return;
 
-  const actionsEl = document.getElementById("hero-actions");
-  const exploreBtn = document.createElement("button");
-  exploreBtn.className = "btn btn--primary btn-text";
-  exploreBtn.textContent = "Explore Variants";
-  exploreBtn.addEventListener("click", () => {
-    document.getElementById("variants")?.scrollIntoView({ behavior: "smooth" });
-  });
+    const metaPillsContainer = heroContent.querySelector('.meta-pills');
+    if (metaPillsContainer) {
+      metaPillsContainer.innerHTML = metaPills.map(pill => 
+        `<span class="pill">${pill.label}</span>`
+      ).join('');
+    }
 
-  const communityBtn = document.createElement("button");
-  communityBtn.className = "btn btn--secondary btn-text";
-  communityBtn.textContent = "Community";
-  communityBtn.addEventListener("click", () => {
-    document.getElementById("community")?.scrollIntoView({ behavior: "smooth" });
-  });
+    const thumbnailImg = this.elements.heroThumbnail?.querySelector('img');
+    if (thumbnailImg) {
+      const featuredROM = roms.find(r => r.id === 'project-sakana') || roms[0];
+      thumbnailImg.src = featuredROM.thumbnail;
+      thumbnailImg.alt = featuredROM.name;
+    }
+  }
 
-  actionsEl.appendChild(exploreBtn);
-  actionsEl.appendChild(communityBtn);
+  renderTechnology() {
+    const techContainer = document.querySelector('.tech-panels');
+    if (!techContainer) return;
 
-  const featured = roms.find(r => r.id === siteConfig.featuredROM);
-  if (featured) {
-    const img = document.getElementById("hero-image");
-    img.src = featured.thumbnail;
-    img.alt = `${featured.name} — ${featured.description.substring(0, 120)}...`;
+    techContainer.innerHTML = techFeatures.map((feature, index) => `
+      <div class="tech-panel reveal-3d" data-index="${index}">
+        <div class="tech-content">
+          <h2 class="tech-title text-split" data-text="${feature.title}">${feature.title}</h2>
+          <p class="tech-description">${feature.description}</p>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  renderCarousel() {
+    const blueprint = document.querySelector('.rom-blueprint');
+    const dotsContainer = document.querySelector('.carousel-dots');
+    
+    if (!blueprint || !dotsContainer) return;
+
+    // Update preview
+    this.updateCarouselPreview(0);
+
+    // Update dots
+    dotsContainer.innerHTML = roms.map((_, index) => `
+      <button class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}" aria-label="Go to slide ${index + 1}"></button>
+    `).join('');
+  }
+
+  updateCarouselPreview(index) {
+    const blueprint = document.querySelector('.rom-blueprint');
+    const preview = blueprint?.querySelector('.rom-preview');
+    
+    if (!preview || !roms[index]) return;
+
+    const rom = roms[index];
+    preview.innerHTML = `
+      <img src="${rom.thumbnail}" alt="${rom.name}">
+      <div class="rom-preview-info">
+        <h3 class="rom-preview-title">${rom.name}</h3>
+        <div class="rom-preview-meta">
+          <span class="pill">${rom.androidVersion}</span>
+          <span class="badge badge-${rom.statusBadge.type}">${rom.statusBadge.label}</span>
+          <span class="pill">${rom.baseFirmware}</span>
+        </div>
+      </div>
+    `;
+
+    // Update dots
+    document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === index);
+    });
+
+    // Update buttons
+    const prevBtn = document.querySelector('.carousel-btn--prev');
+    const nextBtn = document.querySelector('.carousel-btn--next');
+    if (prevBtn) prevBtn.disabled = index === 0;
+    if (nextBtn) nextBtn.disabled = index === roms.length - 1;
+  }
+
+  renderROMSections() {
+    const container = document.querySelector('.rom-sections');
+    if (!container) return;
+
+    container.innerHTML = roms.map((rom, index) => {
+      const isReversed = index % 2 === 1;
+      return `
+        <section class="rom-section reveal-3d ${isReversed ? 'reveal-3d-right' : 'reveal-3d-left'}" id="${rom.id}">
+          <div class="rom-header ${isReversed ? 'rom-header--reversed' : ''}">
+            <div class="rom-image">
+              <img src="${rom.thumbnail}" alt="${rom.name}">
+            </div>
+            <div class="rom-info">
+              <div class="rom-meta">
+                <span class="pill" style="border-color: rgba(246,194,91,0.4); color: var(--color-gold);">${rom.androidVersion}</span>
+                <span class="badge badge-${rom.statusBadge.type}">${rom.statusBadge.label}</span>
+              </div>
+              <h2 class="rom-title">${rom.name}</h2>
+              <p class="rom-desc">${rom.description}</p>
+              
+              <div class="rom-details">
+                <div class="rom-detail-item">
+                  <span class="rom-detail-label">Device</span>
+                  <span class="rom-detail-value">${rom.device}</span>
+                </div>
+                <div class="rom-detail-item">
+                  <span class="rom-detail-label">Build Date</span>
+                  <span class="rom-detail-value">${rom.buildDate}</span>
+                </div>
+                <div class="rom-detail-item">
+                  <span class="rom-detail-label">Base Firmware</span>
+                  <span class="rom-detail-value">${rom.baseFirmware}</span>
+                </div>
+                <div class="rom-detail-item">
+                  <span class="rom-detail-label">System Type</span>
+                  <span class="rom-detail-value">${rom.systemType}</span>
+                </div>
+                <div class="rom-detail-item">
+                  <span class="rom-detail-label">Kernel</span>
+                  <span class="rom-detail-value">${rom.kernelSupport}</span>
+                </div>
+              </div>
+              
+              <h4 class="changelog-title">Changelog</h4>
+              <ul class="changelog-list">
+                ${rom.changelog.map(item => `<li class="changelog-item">${item}</li>`).join('')}
+              </ul>
+              
+              ${rom.knownIssues.length > 0 ? `
+                <h4 class="issues-title">Known Issues</h4>
+                <ul class="issues-list">
+                  ${rom.knownIssues.map(issue => `<li class="issue-item">${issue}</li>`).join('')}
+                </ul>
+              ` : ''}
+              
+              <h4 class="credits-title">Credits</h4>
+              <div class="credits-list">
+                ${rom.credits.map(credit => `<span class="credit-item">${credit}</span>`).join('')}
+              </div>
+              
+              <button class="btn btn-primary btn-large download-btn hover-glow" data-rom-id="${rom.id}">
+                Download — ${rom.priceBRL ? `R$${rom.priceBRL}` : `$${rom.priceUSD}`}
+              </button>
+            </div>
+          </div>
+        </section>
+      `;
+    }).join('');
+
+    // Bind download buttons
+    container.querySelectorAll('.download-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const romId = e.target.dataset.romId;
+        this.openDownloadModal(romId);
+      });
+    });
+  }
+
+  renderGallery() {
+    const galleryTrack = document.querySelector('.gallery-track');
+    if (!galleryTrack) return;
+
+    const allScreenshots = roms.flatMap(rom => 
+      rom.screenshots.map((src, i) => ({
+        src,
+        romName: rom.name,
+        index: i
+      }))
+    );
+
+    galleryTrack.innerHTML = allScreenshots.map((shot, index) => `
+      <div class="gallery-item" data-index="${index}" data-src="${shot.src}">
+        <img src="${shot.src}" alt="${shot.romName} screenshot">
+      </div>
+    `).join('');
+
+    this.initGalleryParallax();
+  }
+
+  renderCommunity() {
+    const communityGrid = document.querySelector('.community-grid');
+    if (!communityGrid) return;
+
+    communityGrid.innerHTML = communityLinks.map(link => `
+      <div class="community-item hover-lift">
+        <h3 class="community-title">${link.title}</h3>
+        <p class="community-desc">${link.description}</p>
+        <a href="${link.link}" class="community-link" target="_blank" rel="noopener noreferrer">
+          Join Channel →
+        </a>
+      </div>
+    `).join('');
+  }
+
+  initBackground() {
+    const bgVideo = document.querySelector('.background-video');
+    if (bgVideo) {
+      bgVideo.src = '/assets/video/bg.mp4';
+      bgVideo.addEventListener('loadeddata', () => bgVideo.classList.add('loaded'));
+      bgVideo.addEventListener('error', () => bgVideo.style.display = 'none');
+    }
+  }
+
+  initIntroSequence() {
+    if (this.state.reducedMotion) {
+      this.hideIntro();
+      return;
+    }
+
+    const introOverlay = this.elements.introOverlay;
+    const introLogo = this.elements.introLogo;
+
+    if (!introOverlay || !introLogo) {
+      this.hideIntro();
+      return;
+    }
+
+    setTimeout(() => introLogo.classList.add('revealed'), 400);
+    setTimeout(() => {
+      introOverlay.classList.add('hidden');
+      document.body.style.overflow = '';
+    }, 2800);
+    setTimeout(() => introOverlay.style.display = 'none', 3600);
+  }
+
+  hideIntro() {
+    const introOverlay = this.elements.introOverlay;
+    if (introOverlay) introOverlay.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  initScrollEffects() {
+    // Scroll progress bar
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+      
+      if (this.elements.scrollProgress) {
+        this.elements.scrollProgress.style.transform = `scaleX(${progress})`;
+      }
+
+      // Back to top visibility
+      if (this.elements.backToTop) {
+        this.elements.backToTop.classList.toggle('visible', scrollTop > 500);
+      }
+
+      // Nav scroll state
+      if (this.elements.nav) {
+        this.elements.nav.classList.toggle('scrolled', scrollTop > 80);
+      }
+    }, { passive: true });
+
+    // 3D Thumbnail parallax
+    if (this.elements.heroThumbnail && !this.state.reducedMotion) {
+      this.initThumbnail3D();
+    }
+
+    // Cursor glow
+    if (this.elements.cursorGlow && !this.state.reducedMotion) {
+      this.initCursorGlow();
+    }
+
+    // Ambient light warping based on scroll
+    this.initAmbientWarper();
+
+    // Text split animations
+    this.initTextSplit();
+  }
+
+  initThumbnail3D() {
+    const thumbnail = this.elements.heroThumbnail;
+    let targetX = 0, targetY = 0;
+    let currentX = 0, currentY = 0;
+    const maxTilt = 5;
+
+    const handleMouseMove = (e) => {
+      const rect = thumbnail.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const deltaX = (e.clientX - centerX) / (rect.width / 2);
+      const deltaY = (e.clientY - centerY) / (rect.height / 2);
+      targetX = deltaY * maxTilt;
+      targetY = -deltaX * maxTilt;
+    };
+
+    const animate = () => {
+      currentX += (targetX - currentX) * 0.08;
+      currentY += (targetY - currentY) * 0.08;
+      thumbnail.style.transform = `perspective(1200px) rotateX(${currentX}deg) rotateY(${currentY}deg)`;
+      requestAnimationFrame(animate);
+    };
+
+    thumbnail.addEventListener('mousemove', handleMouseMove);
+    thumbnail.addEventListener('mouseleave', () => { targetX = 0; targetY = 0; });
+    animate();
+  }
+
+  initCursorGlow() {
+    const cursorGlow = this.elements.cursorGlow;
+    if (!cursorGlow) return;
+
+    let targetX = 0, targetY = 0;
+    let currentX = 0, currentY = 0;
+
+    const handleMouseMove = (e) => {
+      targetX = e.clientX;
+      targetY = e.clientY;
+    };
+
+    const animate = () => {
+      currentX += (targetX - currentX) * 0.12;
+      currentY += (targetY - currentY) * 0.12;
+      cursorGlow.style.left = `${currentX}px`;
+      cursorGlow.style.top = `${currentY}px`;
+      requestAnimationFrame(animate);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    cursorGlow.classList.add('active');
+    animate();
+  }
+
+  initAmbientWarper() {
+    const goldLight = this.elements.ambientGold;
+    const crimsonLight = this.elements.ambientCrimson;
+
+    if (!goldLight || !crimsonLight) return;
+
+    let lastScrollY = 0;
+
+    const updateLights = () => {
+      const scrollY = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollProgress = docHeight > 0 ? scrollY / docHeight : 0;
+
+      // Gold light: moves from top-right to bottom-left as you scroll
+      const goldX = 100 - (scrollProgress * 150);
+      const goldY = 10 + (scrollProgress * 60);
+      const goldScale = 1 + (scrollProgress * 0.5);
+      const goldOpacity = 0.35 - (scrollProgress * 0.15);
+
+      goldLight.style.transform = `translate(${goldX}%, ${goldY}%) scale(${goldScale})`;
+      goldLight.style.opacity = goldOpacity;
+
+      // Crimson light: moves from bottom-left to top-right as you scroll
+      const crimsonX = -10 + (scrollProgress * 100);
+      const crimsonY = 100 - (scrollProgress * 120);
+      const crimsonScale = 1 + ((1 - scrollProgress) * 0.3);
+      const crimsonOpacity = 0.35 - ((1 - scrollProgress) * 0.15);
+
+      crimsonLight.style.transform = `translate(${crimsonX}%, ${crimsonY}%) scale(${crimsonScale})`;
+      crimsonLight.style.opacity = crimsonOpacity;
+
+      lastScrollY = scrollY;
+    };
+
+    window.addEventListener('scroll', updateLights, { passive: true });
+    updateLights();
+  }
+
+  initTextSplit() {
+    const textElements = document.querySelectorAll('.text-split[data-text]');
+    
+    textElements.forEach(el => {
+      const text = el.dataset.text || el.textContent;
+      const words = text.split(' ');
+      
+      el.innerHTML = words.map(word => `
+        <span class="word">
+          <span class="word-inner">${word}</span>
+        </span>
+      `).join(' ');
+    });
+  }
+
+  initGalleryParallax() {
+    const container = document.querySelector('.gallery-container');
+    const track = document.querySelector('.gallery-track');
+    
+    if (!container || !track) return;
+
+    const items = track.querySelectorAll('.gallery-item');
+    if (items.length === 0) return;
+
+    // Calculate total width
+    const updatePositions = () => {
+      const containerRect = container.getBoundingClientRect();
+      const containerCenter = containerRect.width / 2;
+      
+      items.forEach((item, index) => {
+        const rect = item.getBoundingClientRect();
+        const itemCenter = rect.left + rect.width / 2 - containerRect.left;
+        const offset = (itemCenter - containerCenter) * 0.15;
+        
+        item.style.transform = `translateX(${-offset}px)`;
+      });
+    };
+
+    // Scroll-linked horizontal movement
+    let lastScrollY = 0;
+    
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const scrollDelta = scrollY - lastScrollY;
+      lastScrollY = scrollY;
+
+      const gallerySection = document.querySelector('.gallery-section');
+      if (!gallerySection) return;
+
+      const rect = gallerySection.getBoundingClientRect();
+      const sectionHeight = gallerySection.offsetHeight;
+      
+      // Only move when gallery is in view
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        const progress = (window.innerHeight - rect.top) / (window.innerHeight + sectionHeight);
+        const translateX = (progress - 0.5) * 600; // Move左右
+        track.style.transform = `translateY(-50%) translateX(${-translateX}px)`;
+      }
+
+      updatePositions();
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    updatePositions();
+  }
+
+  initAllModules() {
+    initNavigation(this.elements.nav);
+    initReveal();
+    initCarousel(this);
+    initGallery();
+    initModal(this.elements.modalOverlay);
+    initScroll();
+    initAccessibility();
+  }
+
+  bindEvents() {
+    // Back to top
+    if (this.elements.backToTop) {
+      this.elements.backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    // Carousel navigation buttons
+    document.querySelector('.carousel-btn--prev')?.addEventListener('click', () => {
+      if (this.state.currentCarouselIndex > 0) {
+        this.state.currentCarouselIndex--;
+        this.updateCarouselPreview(this.state.currentCarouselIndex);
+      }
+    });
+
+    document.querySelector('.carousel-btn--next')?.addEventListener('click', () => {
+      if (this.state.currentCarouselIndex < roms.length - 1) {
+        this.state.currentCarouselIndex++;
+        this.updateCarouselPreview(this.state.currentCarouselIndex);
+      }
+    });
+
+    // Carousel dots
+    document.querySelectorAll('.carousel-dot').forEach(dot => {
+      dot.addEventListener('click', () => {
+        const index = parseInt(dot.dataset.index);
+        this.state.currentCarouselIndex = index;
+        this.updateCarouselPreview(index);
+      });
+    });
+
+    // Keyboard navigation for carousel
+    document.addEventListener('keydown', (e) => {
+      if (e.target.closest('.carousel-section')) {
+        if (e.key === 'ArrowLeft' && this.state.currentCarouselIndex > 0) {
+          this.state.currentCarouselIndex--;
+          this.updateCarouselPreview(this.state.currentCarouselIndex);
+        }
+        if (e.key === 'ArrowRight' && this.state.currentCarouselIndex < roms.length - 1) {
+          this.state.currentCarouselIndex++;
+          this.updateCarouselPreview(this.state.currentCarouselIndex);
+        }
+      }
+    });
+  }
+
+  openDownloadModal(romId) {
+    const modal = window.modalModule;
+    if (modal) modal.open(romId);
   }
 }
 
-function renderTechnology() {
-  const container = document.getElementById("technology");
-  const template = document.getElementById("tech-panel-template");
+// Initialize
+const app = new ProjectLainApp();
+document.addEventListener('DOMContentLoaded', () => app.init());
 
-  techFeatures.forEach((feature, i) => {
-    const clone = template.content.cloneNode(true);
-    const panel = clone.querySelector("[data-panel]");
-    const ambient = clone.querySelector("[data-ambient]");
-    const title = clone.querySelector("[data-title]");
-    const description = clone.querySelector("[data-description]");
-
-    title.textContent = feature.title;
-    description.textContent = feature.description;
-    ambient.style.background = `radial-gradient(circle, ${feature.ambientColor}40 0%, transparent 70%)`;
-    panel.dataset.index = i;
-
-    const revealEl = clone.querySelector(".reveal");
-    if (revealEl) revealEl.classList.add(`reveal--delay-${Math.min(i + 1, 5)}`);
-
-    container.appendChild(clone);
-  });
-}
-
-function renderCarousel() {
-  const track = document.getElementById("carousel-track");
-  const dotsContainer = document.getElementById("carousel-dots");
-  const template = document.getElementById("carousel-card-template");
-
-  roms.forEach((rom, i) => {
-    const clone = template.content.cloneNode(true);
-    const card = clone.querySelector("[data-card]");
-    const thumb = clone.querySelector("[data-thumbnail]");
-    const name = clone.querySelector("[data-name]");
-    const meta = clone.querySelector("[data-meta]");
-    const badge = clone.querySelector("[data-badge]");
-
-    thumb.src = rom.thumbnail;
-    thumb.alt = `${rom.name} — Project Lain ROM thumbnail`;
-    name.textContent = rom.name;
-    badge.textContent = rom.statusBadge;
-
-    if (rom.statusBadge === "BEST PERFORMANCE") badge.classList.add("badge--best");
-    else if (rom.statusBadge === "PREVIEW BUILD") badge.classList.add("badge--preview");
-    else badge.classList.add("badge--stable");
-
-    [`Android ${rom.androidVersion}`, rom.baseFirmware].forEach(text => {
-      const pill = document.createElement("span");
-      pill.className = "pill pill-text";
-      pill.textContent = text;
-      meta.appendChild(pill);
-    });
-
-    card.dataset.romId = rom.id;
-    track.appendChild(clone);
-
-    card.addEventListener("click", () => {
-      const detail = document.querySelector(`[data-rom-detail-id="${rom.id}"]`);
-      if (detail) detail.scrollIntoView({ behavior: "smooth" });
-    });
-
-    const dot = document.createElement("button");
-    dot.className = `carousel__dot${i === 0 ? " is-active" : ""}`;
-    dot.setAttribute("aria-label", `View ${rom.name}`);
-    dot.setAttribute("role", "tab");
-    dot.dataset.index = i;
-    dotsContainer.appendChild(dot);
-  });
-}
-
-function renderROMDetails() {
-  const container = document.getElementById("rom-details");
-  const template = document.getElementById("rom-detail-template");
-
-  roms.forEach((rom, i) => {
-    const clone = template.content.cloneNode(true);
-    const section = clone.querySelector("[data-rom-detail]");
-    const ambient = clone.querySelector("[data-ambient]");
-    const grid = clone.querySelector("[data-grid]");
-    const thumb = clone.querySelector("[data-thumbnail]");
-    const name = clone.querySelector("[data-name]");
-    const meta = clone.querySelector("[data-meta]");
-    const description = clone.querySelector("[data-description]");
-    const kernelContainer = clone.querySelector("[data-kernel]");
-    const changelogContainer = clone.querySelector("[data-changelog]");
-    const issuesContainer = clone.querySelector("[data-issues]");
-    const creditsContainer = clone.querySelector("[data-credits]");
-    const downloadBtn = clone.querySelector("[data-download-btn]");
-
-    section.dataset.romDetailId = rom.id;
-    section.id = `rom-${rom.id}`;
-
-    if (i % 2 === 1) grid.classList.add("grid--reverse");
-
-    ambient.style.background = `radial-gradient(circle, ${i % 2 === 0 ? "rgba(246,195,91,0.12)" : "rgba(143,24,32,0.12)"} 0%, transparent 70%)`;
-
-    thumb.src = rom.thumbnail;
-    thumb.alt = `${rom.name} — Project Lain ROM preview`;
-    name.textContent = rom.name;
-
-    [
-      { label: "Device", value: rom.device },
-      { label: "Android", value: `Android ${rom.androidVersion}` },
-      { label: "Build Date", value: formatDate(rom.buildDate) },
-      { label: "Base Firmware", value: rom.baseFirmware },
-      { label: "System Type", value: rom.systemType },
-    ].forEach(({ label, value }) => {
-      const el = document.createElement("div");
-      el.className = "rom-meta-item";
-      el.innerHTML = `<span class="rom-meta-label">${label}</span><span class="rom-meta-value">${value}</span>`;
-      meta.appendChild(el);
-    });
-
-    const badge = document.createElement("span");
-    badge.className = "badge";
-    badge.textContent = rom.statusBadge;
-    if (rom.statusBadge === "BEST PERFORMANCE") badge.classList.add("badge--best");
-    else if (rom.statusBadge === "PREVIEW BUILD") badge.classList.add("badge--preview");
-    else badge.classList.add("badge--stable");
-    meta.appendChild(badge);
-
-    description.textContent = rom.description;
-
-    if (rom.kernelSupport) {
-      const kEl = document.createElement("div");
-      kEl.className = "kernel-support";
-      kEl.innerHTML = `<span class="kernel-support__icon">&#9881;</span> ${rom.kernelSupport}`;
-      kernelContainer.appendChild(kEl);
-    }
-
-    const changelogTitle = document.createElement("h3");
-    changelogTitle.className = "rom-section-title";
-    changelogTitle.textContent = "Changelog";
-    changelogContainer.appendChild(changelogTitle);
-
-    const changelist = document.createElement("ul");
-    changelist.className = "changelog-list";
-    rom.changelog.forEach(item => {
-      const li = document.createElement("li");
-      li.textContent = item;
-      changelist.appendChild(li);
-    });
-    changelogContainer.appendChild(changelist);
-
-    if (rom.knownIssues?.length) {
-      const issuesTitle = document.createElement("h3");
-      issuesTitle.className = "rom-section-title";
-      issuesTitle.textContent = "Known Issues";
-      issuesContainer.appendChild(issuesTitle);
-
-      const issuesList = document.createElement("ul");
-      issuesList.className = "issues-list";
-      rom.knownIssues.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item;
-        issuesList.appendChild(li);
-      });
-      issuesContainer.appendChild(issuesList);
-    }
-
-    const creditsTitle = document.createElement("h3");
-    creditsTitle.className = "rom-section-title";
-    creditsTitle.textContent = "Credits";
-    creditsContainer.appendChild(creditsTitle);
-
-    const creditsList = document.createElement("ul");
-    creditsList.className = "credits-list";
-    rom.credits.forEach(item => {
-      const li = document.createElement("li");
-      li.textContent = item;
-      creditsList.appendChild(li);
-    });
-    creditsContainer.appendChild(creditsList);
-
-    downloadBtn.addEventListener("click", () => {
-      window.dispatchEvent(new CustomEvent("openDownloadModal", { detail: { rom } }));
-    });
-
-    container.appendChild(clone);
-  });
-}
-
-function renderGallery() {
-  const track = document.getElementById("gallery-track");
-  const template = document.getElementById("gallery-item-template");
-
-  roms.forEach(rom => {
-    rom.screenshots.forEach((screenshot, si) => {
-      const clone = template.content.cloneNode(true);
-      const item = clone.querySelector("[data-gallery-item]");
-      const img = clone.querySelector("[data-screenshot]");
-
-      img.src = screenshot;
-      img.alt = `${rom.name} — screenshot ${si + 1}`;
-      item.dataset.romId = rom.id;
-      track.appendChild(clone);
-    });
-  });
-}
-
-function renderCommunity() {
-  const container = document.getElementById("community-links");
-  const template = document.getElementById("community-link-template");
-
-  communityLinks.forEach(link => {
-    const clone = template.content.cloneNode(true);
-    const anchor = clone.querySelector("[data-link]");
-    anchor.href = link.url;
-    clone.querySelector("[data-name]").textContent = link.name;
-    clone.querySelector("[data-description]").textContent = link.description;
-    container.appendChild(clone);
-  });
-}
-
-function renderFooter() {
-  document.getElementById("footer-device").textContent = "Supported device: Galaxy S20 FE (r8q)";
-  document.getElementById("footer-copyright").textContent = siteConfig.copyright;
-
-  const linksEl = document.getElementById("footer-links");
-  const template = document.getElementById("footer-link-template");
-
-  [{ label: "Telegram Updates", url: siteConfig.telegramLink }].forEach(link => {
-    const clone = template.content.cloneNode(true);
-    const anchor = clone.querySelector("[data-link]");
-    anchor.href = link.url;
-    anchor.textContent = link.label;
-    linksEl.appendChild(clone);
-  });
-
-  document.getElementById("back-to-top")?.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
-}
-
-function formatDate(dateStr) {
-  const d = new Date(dateStr + "T00:00:00");
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-}
+export default app;

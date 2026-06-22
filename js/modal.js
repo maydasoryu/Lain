@@ -1,70 +1,173 @@
-/**
- * modal.js — Download modal with region selection and Telegram redirect.
- */
-document.addEventListener("DOMContentLoaded", () => {
-  const modal = document.getElementById("download-modal");
-  const modalClose = document.getElementById("modal-close");
-  const pageContent = document.getElementById("page-content");
-  const stepRegion = document.getElementById("modal-step-region");
-  const stepPayment = document.getElementById("modal-step-payment");
-  const modalRomName = document.getElementById("modal-rom-name");
-  const priceBrl = document.getElementById("price-brl");
-  const priceUsd = document.getElementById("price-usd");
-  const regionOptions = document.querySelectorAll(".region-option");
-  const telegramBtn = document.getElementById("telegram-btn");
+/* =============================================
+   PROJECT LAIN — MODAL
+   ============================================= */
 
-  let currentRom = null;
+let modalState = {
+  isOpen: false,
+  currentROM: null,
+  selectedRegion: null
+};
 
-  window.addEventListener("openDownloadModal", (e) => {
-    currentRom = e.detail.rom;
-    openModal();
+const telegramLink = 'https://t.me/nihilupdates';
+
+export function initModal(modalOverlay) {
+  if (!modalOverlay) return;
+
+  const closeBtn = modalOverlay.querySelector('.modal-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeModal);
+  }
+
+  modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) {
+      closeModal();
+    }
   });
 
-  function openModal() {
-    if (!currentRom) return;
-    stepRegion.classList.remove("is-hidden");
-    stepPayment.classList.remove("is-visible");
-    modalRomName.textContent = currentRom.name;
-    priceBrl.textContent = `R$${currentRom.priceBRL}`;
-    priceUsd.textContent = `$${currentRom.priceUSD}`;
-    regionOptions.forEach((opt) => opt.setAttribute("aria-checked", "false"));
-    modal.classList.add("is-visible");
-    pageContent.classList.add("is-blurred");
-    document.body.style.overflow = "hidden";
-    setTimeout(() => modalClose.focus(), 100);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modalState.isOpen) {
+      closeModal();
+    }
+  });
+
+  window.modalModule = {
+    open: openModal,
+    close: closeModal
+  };
+}
+
+function openModal(romId) {
+  const modalOverlay = document.querySelector('.modal-overlay');
+  const modalContent = modalOverlay?.querySelector('.modal-content');
+  
+  if (!modalOverlay) return;
+
+  // Import roms dynamically to avoid circular dependency
+  import('./data.js').then(({ roms }) => {
+    const rom = roms?.find(r => r.id === romId);
+    
+    if (rom) {
+      modalState.currentROM = rom;
+      modalState.selectedRegion = null;
+      
+      resetModalContent();
+      document.body.style.overflow = 'hidden';
+      modalOverlay.classList.add('active');
+      modalState.isOpen = true;
+
+      const closeBtn = modalOverlay.querySelector('.modal-close');
+      if (closeBtn) closeBtn.focus();
+    }
+  });
+}
+
+function closeModal() {
+  const modalOverlay = document.querySelector('.modal-overlay');
+  
+  if (!modalOverlay) return;
+
+  modalOverlay.classList.remove('active');
+  modalState.isOpen = false;
+  modalState.currentROM = null;
+  modalState.selectedRegion = null;
+  document.body.style.overflow = '';
+}
+
+function resetModalContent() {
+  const modalContent = document.querySelector('.modal-content');
+  if (!modalContent) return;
+
+  modalContent.innerHTML = `
+    <button class="modal-close" aria-label="Close modal">✕</button>
+    
+    <div class="modal-header">
+      <h3 class="modal-title">Select Your Region</h3>
+      <p class="modal-desc">Choose your country for pricing</p>
+    </div>
+    
+    <div class="modal-body">
+      <div class="region-options">
+        <div class="region-option" data-region="brazil">
+          <span class="region-name">Brazil</span>
+          <span class="region-price">R$8</span>
+        </div>
+        <div class="region-option" data-region="usa">
+          <span class="region-name">United States</span>
+          <span class="region-price">$2</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn btn-primary btn-large modal-proceed-btn" disabled>
+        Proceed to Download
+      </button>
+    </div>
+  `;
+
+  initModalEvents();
+}
+
+function initModalEvents() {
+  const closeBtn = document.querySelector('.modal-close');
+  const regionOptions = document.querySelectorAll('.region-option');
+  const proceedBtn = document.querySelector('.modal-proceed-btn');
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeModal);
   }
 
-  function closeModal() {
-    modal.classList.remove("is-visible");
-    pageContent.classList.remove("is-blurred");
-    document.body.style.overflow = "";
-  }
-
-  modalClose.addEventListener("click", closeModal);
-  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && modal.classList.contains("is-visible")) closeModal(); });
-
-  regionOptions.forEach((option) => {
-    option.addEventListener("click", () => {
-      regionOptions.forEach((opt) => opt.setAttribute("aria-checked", "false"));
-      option.setAttribute("aria-checked", "true");
-      stepRegion.classList.add("is-hidden");
-      stepPayment.classList.add("is-visible");
-      telegramBtn.href = currentRom.telegramLink;
+  regionOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      regionOptions.forEach(opt => opt.classList.remove('selected'));
+      option.classList.add('selected');
+      modalState.selectedRegion = option.dataset.region;
+      
+      if (proceedBtn) {
+        proceedBtn.disabled = false;
+      }
     });
   });
 
-  // Focus trap
-  modal.addEventListener("keydown", (e) => {
-    if (e.key !== "Tab") return;
-    const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-  });
+  if (proceedBtn) {
+    proceedBtn.addEventListener('click', handleProceed);
+  }
+}
 
-  // Prevent background scroll
-  modal.addEventListener("wheel", e => e.preventDefault());
-  modal.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
-});
+function handleProceed() {
+  if (!modalState.selectedRegion) return;
+
+  const modalContent = document.querySelector('.modal-content');
+  if (!modalContent) return;
+
+  modalContent.innerHTML = `
+    <button class="modal-close" aria-label="Close modal">✕</button>
+    
+    <div class="modal-success">
+      <div class="modal-success-icon">✓</div>
+      <h3 class="modal-title">Selection Confirmed</h3>
+      <p class="modal-desc" style="margin-top: 16px;">
+        Head over to Telegram to proceed with payment.
+      </p>
+    </div>
+    
+    <div class="modal-footer" style="margin-top: 32px;">
+      <a href="${telegramLink}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-large">
+        Open Telegram
+      </a>
+    </div>
+  `;
+
+  const closeBtn = modalContent.querySelector('.modal-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeModal);
+  }
+}
+
+export function open(romId) {
+  openModal(romId);
+}
+
+export function close() {
+  closeModal();
+}
