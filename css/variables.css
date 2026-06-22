@@ -1,61 +1,12 @@
-/* =============================================
-   PROJECT LAIN — VARIABLES
-   ============================================= */
-
 :root {
-  /* Colors */
   --gold: #F6C35B;
   --crimson: #8F1820;
-  --gold-bright: #FFD97D;
-  --crimson-bright: #D44550;
-  
-  --bg-primary: #000000;
-  --bg-secondary: #050505;
-  
-  --text-primary: #FFFFFF;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-tertiary: rgba(255, 255, 255, 0.45);
-  
-  --glass-bg: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  
-  /* Spacing */
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2rem;
-  --space-2xl: 3rem;
-  --space-3xl: 4rem;
-  --space-4xl: 6rem;
-  --space-5xl: 8rem;
-  
-  /* Blur */
-  --blur-sm: 8px;
-  --blur-md: 16px;
-  --blur-lg: 32px;
-  --blur-xl: 48px;
-  
-  /* Shadows */
-  --shadow-glow: 0 0 60px rgba(246, 194, 91, 0.2);
-  --shadow-glow-intense: 0 0 80px rgba(246, 194, 91, 0.3);
-  
-  /* Borders */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius-full: 9999px;
-  
-  /* Font */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :root {
-    --blur-sm: 0;
-    --blur-md: 0;
-    --blur-lg: 0;
-    --blur-xl: 0;
-  }
+  --bg: #000;
+  --text: #fff;
+  --glass: rgba(255,255,255,0.05);
+  --border: rgba(255,255,255,0.1);
+  --blur-heavy: 48px;
+  --blur-medium: 32px;
+  --blur-light: 16px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
