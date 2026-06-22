@@ -1,0 +1,22 @@
+/**
+ * scroll.js — Scroll progress indicator.
+ */
+document.addEventListener("DOMContentLoaded", () => {
+  const bar = document.getElementById("scroll-progress");
+  if (!bar) return;
+  let ticking = false;
+
+  function update() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    bar.style.width = `${progress}%`;
+    ticking = false;
+  }
+
+  window.addEventListener("scroll", () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+
+  update();
+});
