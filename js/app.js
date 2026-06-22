@@ -3,204 +3,162 @@
    ============================================= */
 
 import { roms, techFeatures, metaPills, communityLinks } from './data.js';
-import { initNavigation } from './navigation.js';
-import { initReveal } from './reveal.js';
-import { initCarousel } from './carousel.js';
-import { initGallery } from './gallery.js';
-import { initModal } from './modal.js';
-import { initScroll } from './scroll.js';
-import { initAccessibility } from './accessibility.js';
 
 class ProjectLainApp {
   constructor() {
-    this.elements = {};
-    this.state = {
-      currentCarouselIndex: 0,
-      scrollY: 0,
-      reducedMotion: false
-    };
+    this.currentIndex = 0;
+    this.isReducedMotion = false;
   }
 
   init() {
     this.checkReducedMotion();
-    this.cacheElements();
-    this.renderContent();
-    this.initBackground();
-    this.initIntroSequence();
-    this.initScrollEffects();
-    this.initAllModules();
+    this.renderHero();
+    this.renderTech();
+    this.renderCarousel();
+    this.renderRomSections();
+    this.renderGallery();
+    this.renderCommunity();
+    this.initEffects();
     this.bindEvents();
   }
 
   checkReducedMotion() {
-    this.state.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
-  cacheElements() {
-    this.elements = {
-      introOverlay: document.querySelector('.intro-overlay'),
-      introLogo: document.querySelector('.intro-logo'),
-      scrollProgress: document.querySelector('.scroll-progress'),
-      nav: document.querySelector('.nav'),
-      heroThumbnail: document.querySelector('.hero-thumbnail'),
-      backToTop: document.querySelector('.back-to-top'),
-      cursorGlow: document.querySelector('.cursor-glow'),
-      modalOverlay: document.querySelector('.modal-overlay'),
-      galleryOverlay: document.querySelector('.fullscreen-gallery'),
-      ambientGold: document.querySelector('.ambient-light--gold'),
-      ambientCrimson: document.querySelector('.ambient-light--crimson')
-    };
-  }
-
-  renderContent() {
-    this.renderHero();
-    this.renderTechnology();
-    this.renderCarousel();
-    this.renderROMSections();
-    this.renderGallery();
-    this.renderCommunity();
-  }
-
+  // === RENDER ===
+  
   renderHero() {
-    const heroContent = document.querySelector('.hero-content');
-    if (!heroContent) return;
+    const container = document.querySelector('.hero-content');
+    if (!container) return;
 
-    const metaPillsContainer = heroContent.querySelector('.meta-pills');
-    if (metaPillsContainer) {
-      metaPillsContainer.innerHTML = metaPills.map(pill => 
-        `<span class="pill">${pill.label}</span>`
-      ).join('');
+    // Meta pills
+    const pillsEl = container.querySelector('.meta-pills');
+    if (pillsEl) {
+      pillsEl.innerHTML = metaPills.map(p => `<span class="pill">${p.label}</span>`).join('');
     }
 
-    const thumbnailImg = this.elements.heroThumbnail?.querySelector('img');
-    if (thumbnailImg) {
-      const featuredROM = roms.find(r => r.id === 'project-sakana') || roms[0];
-      thumbnailImg.src = featuredROM.thumbnail;
-      thumbnailImg.alt = featuredROM.name;
+    // Thumbnail
+    const thumb = document.querySelector('.hero-thumbnail img');
+    if (thumb) {
+      const featured = roms.find(r => r.id === 'project-sakana') || roms[0];
+      thumb.src = featured.thumbnail;
+      thumb.alt = featured.name;
     }
   }
 
-  renderTechnology() {
-    const techContainer = document.querySelector('.tech-panels');
-    if (!techContainer) return;
+  renderTech() {
+    const container = document.querySelector('.tech-panels');
+    if (!container) return;
 
-    techContainer.innerHTML = techFeatures.map((feature, index) => `
-      <div class="tech-panel reveal-3d" data-index="${index}">
-        <div class="tech-content">
-          <h2 class="tech-title text-split" data-text="${feature.title}">${feature.title}</h2>
-          <p class="tech-description">${feature.description}</p>
-        </div>
+    container.innerHTML = techFeatures.map((f, i) => `
+      <div class="tech-panel reveal-3d" data-index="${i}">
+        <div class="tech-title">${f.title}</div>
+        <p class="tech-desc">${f.description}</p>
       </div>
     `).join('');
+
+    this.initReveal();
   }
 
   renderCarousel() {
-    const blueprint = document.querySelector('.rom-blueprint');
+    const track = document.querySelector('.rom-cards');
     const dotsContainer = document.querySelector('.carousel-dots');
     
-    if (!blueprint || !dotsContainer) return;
+    if (!track || !dotsContainer) return;
 
-    // Update preview
-    this.updateCarouselPreview(0);
-
-    // Update dots
-    dotsContainer.innerHTML = roms.map((_, index) => `
-      <button class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}" aria-label="Go to slide ${index + 1}"></button>
-    `).join('');
-  }
-
-  updateCarouselPreview(index) {
-    const blueprint = document.querySelector('.rom-blueprint');
-    const preview = blueprint?.querySelector('.rom-preview');
-    
-    if (!preview || !roms[index]) return;
-
-    const rom = roms[index];
-    preview.innerHTML = `
-      <img src="${rom.thumbnail}" alt="${rom.name}">
-      <div class="rom-preview-info">
-        <h3 class="rom-preview-title">${rom.name}</h3>
-        <div class="rom-preview-meta">
-          <span class="pill">${rom.androidVersion}</span>
-          <span class="badge badge-${rom.statusBadge.type}">${rom.statusBadge.label}</span>
-          <span class="pill">${rom.baseFirmware}</span>
+    // Create cards
+    track.innerHTML = roms.map((rom, i) => `
+      <div class="rom-card ${i === 0 ? 'active' : ''}" data-index="${i}">
+        <div class="rom-card-image">
+          <img src="${rom.thumbnail}" alt="${rom.name}">
+        </div>
+        <div class="rom-card-info">
+          <h3 class="rom-card-title">${rom.name}</h3>
+          <div class="rom-card-meta">
+            <span class="pill">${rom.androidVersion}</span>
+            <span class="badge badge-${rom.statusBadge.type}">${rom.statusBadge.label}</span>
+          </div>
+          <p class="rom-card-version">${rom.baseFirmware}</p>
         </div>
       </div>
-    `;
+    `).join('');
 
-    // Update dots
-    document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
-      dot.classList.toggle('active', i === index);
+    // Create dots
+    dotsContainer.innerHTML = roms.map((_, i) => `
+      <button class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></button>
+    `).join('');
+
+    // Click on cards
+    track.querySelectorAll('.rom-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const index = parseInt(card.dataset.index);
+        this.goToSlide(index);
+      });
     });
 
-    // Update buttons
-    const prevBtn = document.querySelector('.carousel-btn--prev');
-    const nextBtn = document.querySelector('.carousel-btn--next');
-    if (prevBtn) prevBtn.disabled = index === 0;
-    if (nextBtn) nextBtn.disabled = index === roms.length - 1;
+    this.initReveal();
   }
 
-  renderROMSections() {
+  renderRomSections() {
     const container = document.querySelector('.rom-sections');
     if (!container) return;
 
-    container.innerHTML = roms.map((rom, index) => {
-      const isReversed = index % 2 === 1;
+    container.innerHTML = roms.map((rom, i) => {
+      const reversed = i % 2 === 1;
       return `
-        <section class="rom-section reveal-3d ${isReversed ? 'reveal-3d-right' : 'reveal-3d-left'}" id="${rom.id}">
-          <div class="rom-header ${isReversed ? 'rom-header--reversed' : ''}">
+        <section class="rom-section reveal-3d ${reversed ? 'reveal-3d-right' : 'reveal-3d-left'}" id="${rom.id}">
+          <div class="rom-header ${reversed ? 'reversed' : ''}">
             <div class="rom-image">
               <img src="${rom.thumbnail}" alt="${rom.name}">
             </div>
             <div class="rom-info">
               <div class="rom-meta">
-                <span class="pill" style="border-color: rgba(246,194,91,0.4); color: var(--color-gold);">${rom.androidVersion}</span>
+                <span class="pill" style="border-color: rgba(246,194,91,0.4); color: #F6C35B;">${rom.androidVersion}</span>
                 <span class="badge badge-${rom.statusBadge.type}">${rom.statusBadge.label}</span>
               </div>
               <h2 class="rom-title">${rom.name}</h2>
               <p class="rom-desc">${rom.description}</p>
               
-              <div class="rom-details">
-                <div class="rom-detail-item">
-                  <span class="rom-detail-label">Device</span>
-                  <span class="rom-detail-value">${rom.device}</span>
-                </div>
-                <div class="rom-detail-item">
-                  <span class="rom-detail-label">Build Date</span>
-                  <span class="rom-detail-value">${rom.buildDate}</span>
-                </div>
-                <div class="rom-detail-item">
-                  <span class="rom-detail-label">Base Firmware</span>
-                  <span class="rom-detail-value">${rom.baseFirmware}</span>
-                </div>
-                <div class="rom-detail-item">
-                  <span class="rom-detail-label">System Type</span>
-                  <span class="rom-detail-value">${rom.systemType}</span>
-                </div>
-                <div class="rom-detail-item">
-                  <span class="rom-detail-label">Kernel</span>
-                  <span class="rom-detail-value">${rom.kernelSupport}</span>
-                </div>
+              <div class="rom-detail-item">
+                <span class="rom-detail-label">Device</span>
+                <span class="rom-detail-value">${rom.device}</span>
+              </div>
+              <div class="rom-detail-item">
+                <span class="rom-detail-label">Build Date</span>
+                <span class="rom-detail-value">${rom.buildDate}</span>
+              </div>
+              <div class="rom-detail-item">
+                <span class="rom-detail-label">Base Firmware</span>
+                <span class="rom-detail-value">${rom.baseFirmware}</span>
+              </div>
+              <div class="rom-detail-item">
+                <span class="rom-detail-label">System Type</span>
+                <span class="rom-detail-value">${rom.systemType}</span>
+              </div>
+              <div class="rom-detail-item">
+                <span class="rom-detail-label">Kernel</span>
+                <span class="rom-detail-value">${rom.kernelSupport}</span>
               </div>
               
-              <h4 class="changelog-title">Changelog</h4>
+              <div class="list-title">Changelog</div>
               <ul class="changelog-list">
                 ${rom.changelog.map(item => `<li class="changelog-item">${item}</li>`).join('')}
               </ul>
               
               ${rom.knownIssues.length > 0 ? `
-                <h4 class="issues-title">Known Issues</h4>
+                <div class="list-title" style="color: #d44550;">Known Issues</div>
                 <ul class="issues-list">
-                  ${rom.knownIssues.map(issue => `<li class="issue-item">${issue}</li>`).join('')}
+                  ${rom.knownIssues.map(item => `<li class="issue-item">${item}</li>`).join('')}
                 </ul>
               ` : ''}
               
-              <h4 class="credits-title">Credits</h4>
+              <div class="list-title">Credits</div>
               <div class="credits-list">
-                ${rom.credits.map(credit => `<span class="credit-item">${credit}</span>`).join('')}
+                ${rom.credits.map(c => `<span class="credit-item">${c}</span>`).join('')}
               </div>
               
-              <button class="btn btn-primary btn-large download-btn hover-glow" data-rom-id="${rom.id}">
+              <button class="btn btn-primary btn-large download-btn" data-rom="${rom.id}">
                 Download — ${rom.priceBRL ? `R$${rom.priceBRL}` : `$${rom.priceUSD}`}
               </button>
             </div>
@@ -209,349 +167,415 @@ class ProjectLainApp {
       `;
     }).join('');
 
-    // Bind download buttons
+    // Download buttons
     container.querySelectorAll('.download-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const romId = e.target.dataset.romId;
-        this.openDownloadModal(romId);
+      btn.addEventListener('click', () => {
+        const romId = btn.dataset.rom;
+        this.openModal(romId);
+      });
+    });
+
+    this.initReveal();
+  }
+
+  renderGallery() {
+    const track = document.querySelector('.gallery-track');
+    if (!track) return;
+
+    const allScreenshots = roms.flatMap(rom => rom.screenshots.map(src => src));
+
+    track.innerHTML = allScreenshots.map((src, i) => `
+      <div class="gallery-item" data-index="${i}">
+        <img src="${src}" alt="Screenshot ${i + 1}">
+      </div>
+    `).join('');
+
+    // Click to fullscreen
+    track.querySelectorAll('.gallery-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const img = item.querySelector('img');
+        this.openFullscreen(img.src);
       });
     });
   }
 
-  renderGallery() {
-    const galleryTrack = document.querySelector('.gallery-track');
-    if (!galleryTrack) return;
-
-    const allScreenshots = roms.flatMap(rom => 
-      rom.screenshots.map((src, i) => ({
-        src,
-        romName: rom.name,
-        index: i
-      }))
-    );
-
-    galleryTrack.innerHTML = allScreenshots.map((shot, index) => `
-      <div class="gallery-item" data-index="${index}" data-src="${shot.src}">
-        <img src="${shot.src}" alt="${shot.romName} screenshot">
-      </div>
-    `).join('');
-
-    this.initGalleryParallax();
-  }
-
   renderCommunity() {
-    const communityGrid = document.querySelector('.community-grid');
-    if (!communityGrid) return;
+    const grid = document.querySelector('.community-grid');
+    if (!grid) return;
 
-    communityGrid.innerHTML = communityLinks.map(link => `
-      <div class="community-item hover-lift">
+    grid.innerHTML = communityLinks.map(link => `
+      <div class="community-item">
         <h3 class="community-title">${link.title}</h3>
         <p class="community-desc">${link.description}</p>
-        <a href="${link.link}" class="community-link" target="_blank" rel="noopener noreferrer">
-          Join Channel →
-        </a>
+        <a href="${link.link}" class="community-link" target="_blank">Join Channel →</a>
       </div>
     `).join('');
   }
 
-  initBackground() {
-    const bgVideo = document.querySelector('.background-video');
-    if (bgVideo) {
-      bgVideo.src = '/assets/video/bg.mp4';
-      bgVideo.addEventListener('loadeddata', () => bgVideo.classList.add('loaded'));
-      bgVideo.addEventListener('error', () => bgVideo.style.display = 'none');
+  // === CAROUSEL ===
+
+  goToSlide(index) {
+    if (index < 0 || index >= roms.length) return;
+    
+    this.currentIndex = index;
+
+    // Update cards
+    document.querySelectorAll('.rom-card').forEach((card, i) => {
+      card.classList.toggle('active', i === index);
+    });
+
+    // Update dots
+    document.querySelectorAll('.dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === index);
+    });
+
+    // Update buttons
+    const prevBtn = document.querySelector('.carousel-btn--prev');
+    const nextBtn = document.querySelector('.carousel-btn--next');
+    if (prevBtn) prevBtn.disabled = index === 0;
+    if (nextBtn) nextBtn.disabled = index === roms.length - 1;
+
+    // Scroll card into view
+    const track = document.querySelector('.rom-cards');
+    const card = track?.querySelectorAll('.rom-card')[index];
+    if (card) {
+      card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
     }
   }
 
-  initIntroSequence() {
-    if (this.state.reducedMotion) {
-      this.hideIntro();
-      return;
+  nextSlide() {
+    if (this.currentIndex < roms.length - 1) {
+      this.goToSlide(this.currentIndex + 1);
     }
+  }
 
-    const introOverlay = this.elements.introOverlay;
-    const introLogo = this.elements.introLogo;
-
-    if (!introOverlay || !introLogo) {
-      this.hideIntro();
-      return;
+  prevSlide() {
+    if (this.currentIndex > 0) {
+      this.goToSlide(this.currentIndex - 1);
     }
+  }
 
-    setTimeout(() => introLogo.classList.add('revealed'), 400);
-    setTimeout(() => {
-      introOverlay.classList.add('hidden');
+  // === EFFECTS ===
+
+  initEffects() {
+    // Intro
+    const intro = document.querySelector('.intro-overlay');
+    const logo = document.querySelector('.intro-logo');
+    
+    if (intro && logo) {
+      setTimeout(() => logo.classList.add('revealed'), 400);
+      setTimeout(() => {
+        intro.classList.add('hidden');
+        document.body.style.overflow = '';
+      }, 2800);
+      setTimeout(() => intro.style.display = 'none', 3600);
+    } else {
       document.body.style.overflow = '';
-    }, 2800);
-    setTimeout(() => introOverlay.style.display = 'none', 3600);
-  }
+    }
 
-  hideIntro() {
-    const introOverlay = this.elements.introOverlay;
-    if (introOverlay) introOverlay.style.display = 'none';
-    document.body.style.overflow = '';
-  }
+    // Scroll effects
+    window.addEventListener('scroll', () => this.onScroll(), { passive: true });
 
-  initScrollEffects() {
-    // Scroll progress bar
-    window.addEventListener('scroll', () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = docHeight > 0 ? scrollTop / docHeight : 0;
-      
-      if (this.elements.scrollProgress) {
-        this.elements.scrollProgress.style.transform = `scaleX(${progress})`;
-      }
-
-      // Back to top visibility
-      if (this.elements.backToTop) {
-        this.elements.backToTop.classList.toggle('visible', scrollTop > 500);
-      }
-
-      // Nav scroll state
-      if (this.elements.nav) {
-        this.elements.nav.classList.toggle('scrolled', scrollTop > 80);
-      }
-    }, { passive: true });
-
-    // 3D Thumbnail parallax
-    if (this.elements.heroThumbnail && !this.state.reducedMotion) {
-      this.initThumbnail3D();
+    // 3D thumbnail
+    if (!this.isReducedMotion) {
+      this.init3DThumbnail();
     }
 
     // Cursor glow
-    if (this.elements.cursorGlow && !this.state.reducedMotion) {
+    if (!this.isReducedMotion) {
       this.initCursorGlow();
     }
 
-    // Ambient light warping based on scroll
+    // Ambient lights
     this.initAmbientWarper();
 
-    // Text split animations
-    this.initTextSplit();
+    // Reveal on scroll
+    this.initReveal();
   }
 
-  initThumbnail3D() {
-    const thumbnail = this.elements.heroThumbnail;
+  initReveal() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+
+    document.querySelectorAll('.reveal-3d, .reveal, .reveal-3d-left, .reveal-3d-right, .stagger').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Stagger children
+    document.querySelectorAll('[class*="stagger-"]').forEach(el => {
+      const parent = el.closest('.hero-content, .carousel-header, .gallery-header');
+      if (parent && !parent.dataset.observed) {
+        parent.dataset.observed = 'true';
+        const staggerEls = parent.querySelectorAll('.stagger');
+        const parentObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              staggerEls.forEach(s => s.classList.add('visible'));
+              parentObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.2 });
+        parentObserver.observe(parent);
+      }
+    });
+  }
+
+  init3DThumbnail() {
+    const thumb = document.querySelector('.hero-thumbnail');
+    if (!thumb) return;
+
     let targetX = 0, targetY = 0;
     let currentX = 0, currentY = 0;
-    const maxTilt = 5;
 
-    const handleMouseMove = (e) => {
-      const rect = thumbnail.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const deltaX = (e.clientX - centerX) / (rect.width / 2);
-      const deltaY = (e.clientY - centerY) / (rect.height / 2);
-      targetX = deltaY * maxTilt;
-      targetY = -deltaX * maxTilt;
-    };
+    thumb.addEventListener('mousemove', (e) => {
+      const rect = thumb.getBoundingClientRect();
+      const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+      const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+      targetX = y * 5;
+      targetY = -x * 5;
+    });
+
+    thumb.addEventListener('mouseleave', () => {
+      targetX = 0;
+      targetY = 0;
+    });
 
     const animate = () => {
       currentX += (targetX - currentX) * 0.08;
       currentY += (targetY - currentY) * 0.08;
-      thumbnail.style.transform = `perspective(1200px) rotateX(${currentX}deg) rotateY(${currentY}deg)`;
+      thumb.style.transform = `perspective(1200px) rotateX(${currentX}deg) rotateY(${currentY}deg)`;
       requestAnimationFrame(animate);
     };
 
-    thumbnail.addEventListener('mousemove', handleMouseMove);
-    thumbnail.addEventListener('mouseleave', () => { targetX = 0; targetY = 0; });
     animate();
   }
 
   initCursorGlow() {
-    const cursorGlow = this.elements.cursorGlow;
-    if (!cursorGlow) return;
+    const glow = document.querySelector('.cursor-glow');
+    if (!glow) return;
 
+    let x = 0, y = 0;
     let targetX = 0, targetY = 0;
-    let currentX = 0, currentY = 0;
 
-    const handleMouseMove = (e) => {
+    document.addEventListener('mousemove', (e) => {
       targetX = e.clientX;
       targetY = e.clientY;
-    };
+    });
+
+    glow.classList.add('active');
 
     const animate = () => {
-      currentX += (targetX - currentX) * 0.12;
-      currentY += (targetY - currentY) * 0.12;
-      cursorGlow.style.left = `${currentX}px`;
-      cursorGlow.style.top = `${currentY}px`;
+      x += (targetX - x) * 0.12;
+      y += (targetY - y) * 0.12;
+      glow.style.left = x + 'px';
+      glow.style.top = y + 'px';
       requestAnimationFrame(animate);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    cursorGlow.classList.add('active');
     animate();
   }
 
   initAmbientWarper() {
-    const goldLight = this.elements.ambientGold;
-    const crimsonLight = this.elements.ambientCrimson;
+    const gold = document.querySelector('.ambient-gold');
+    const crimson = document.querySelector('.ambient-crimson');
 
-    if (!goldLight || !crimsonLight) return;
+    if (!gold || !crimson) return;
 
-    let lastScrollY = 0;
-
-    const updateLights = () => {
+    window.addEventListener('scroll', () => {
       const scrollY = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollProgress = docHeight > 0 ? scrollY / docHeight : 0;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = maxScroll > 0 ? scrollY / maxScroll : 0;
 
-      // Gold light: moves from top-right to bottom-left as you scroll
-      const goldX = 100 - (scrollProgress * 150);
-      const goldY = 10 + (scrollProgress * 60);
-      const goldScale = 1 + (scrollProgress * 0.5);
-      const goldOpacity = 0.35 - (scrollProgress * 0.15);
+      gold.style.transform = `translate(${100 - progress * 150}%, ${10 + progress * 60}%)`;
+      gold.style.opacity = 0.35 - progress * 0.15;
 
-      goldLight.style.transform = `translate(${goldX}%, ${goldY}%) scale(${goldScale})`;
-      goldLight.style.opacity = goldOpacity;
-
-      // Crimson light: moves from bottom-left to top-right as you scroll
-      const crimsonX = -10 + (scrollProgress * 100);
-      const crimsonY = 100 - (scrollProgress * 120);
-      const crimsonScale = 1 + ((1 - scrollProgress) * 0.3);
-      const crimsonOpacity = 0.35 - ((1 - scrollProgress) * 0.15);
-
-      crimsonLight.style.transform = `translate(${crimsonX}%, ${crimsonY}%) scale(${crimsonScale})`;
-      crimsonLight.style.opacity = crimsonOpacity;
-
-      lastScrollY = scrollY;
-    };
-
-    window.addEventListener('scroll', updateLights, { passive: true });
-    updateLights();
+      crimson.style.transform = `translate(${-10 + progress * 100}%, ${100 - progress * 120}%)`;
+      crimson.style.opacity = 0.35 - (1 - progress) * 0.15;
+    }, { passive: true });
   }
 
-  initTextSplit() {
-    const textElements = document.querySelectorAll('.text-split[data-text]');
+  onScroll() {
+    const scrollY = window.scrollY;
     
-    textElements.forEach(el => {
-      const text = el.dataset.text || el.textContent;
-      const words = text.split(' ');
-      
-      el.innerHTML = words.map(word => `
-        <span class="word">
-          <span class="word-inner">${word}</span>
-        </span>
-      `).join(' ');
-    });
-  }
-
-  initGalleryParallax() {
-    const container = document.querySelector('.gallery-container');
-    const track = document.querySelector('.gallery-track');
-    
-    if (!container || !track) return;
-
-    const items = track.querySelectorAll('.gallery-item');
-    if (items.length === 0) return;
-
-    // Calculate total width
-    const updatePositions = () => {
-      const containerRect = container.getBoundingClientRect();
-      const containerCenter = containerRect.width / 2;
-      
-      items.forEach((item, index) => {
-        const rect = item.getBoundingClientRect();
-        const itemCenter = rect.left + rect.width / 2 - containerRect.left;
-        const offset = (itemCenter - containerCenter) * 0.15;
-        
-        item.style.transform = `translateX(${-offset}px)`;
-      });
-    };
-
-    // Scroll-linked horizontal movement
-    let lastScrollY = 0;
-    
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const scrollDelta = scrollY - lastScrollY;
-      lastScrollY = scrollY;
-
-      const gallerySection = document.querySelector('.gallery-section');
-      if (!gallerySection) return;
-
-      const rect = gallerySection.getBoundingClientRect();
-      const sectionHeight = gallerySection.offsetHeight;
-      
-      // Only move when gallery is in view
-      if (rect.top < window.innerHeight && rect.bottom > 0) {
-        const progress = (window.innerHeight - rect.top) / (window.innerHeight + sectionHeight);
-        const translateX = (progress - 0.5) * 600; // Move左右
-        track.style.transform = `translateY(-50%) translateX(${-translateX}px)`;
-      }
-
-      updatePositions();
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    updatePositions();
-  }
-
-  initAllModules() {
-    initNavigation(this.elements.nav);
-    initReveal();
-    initCarousel(this);
-    initGallery();
-    initModal(this.elements.modalOverlay);
-    initScroll();
-    initAccessibility();
-  }
-
-  bindEvents() {
-    // Back to top
-    if (this.elements.backToTop) {
-      this.elements.backToTop.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
+    // Progress bar
+    const progress = document.querySelector('.progress-bar');
+    if (progress) {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const p = maxScroll > 0 ? scrollY / maxScroll : 0;
+      progress.style.transform = `scaleX(${p})`;
     }
 
-    // Carousel navigation buttons
-    document.querySelector('.carousel-btn--prev')?.addEventListener('click', () => {
-      if (this.state.currentCarouselIndex > 0) {
-        this.state.currentCarouselIndex--;
-        this.updateCarouselPreview(this.state.currentCarouselIndex);
-      }
-    });
+    // Back to top
+    const backToTop = document.querySelector('.back-to-top');
+    if (backToTop) {
+      backToTop.classList.toggle('visible', scrollY > 500);
+    }
 
-    document.querySelector('.carousel-btn--next')?.addEventListener('click', () => {
-      if (this.state.currentCarouselIndex < roms.length - 1) {
-        this.state.currentCarouselIndex++;
-        this.updateCarouselPreview(this.state.currentCarouselIndex);
-      }
-    });
+    // Nav
+    const nav = document.querySelector('.nav');
+    if (nav) {
+      nav.classList.toggle('scrolled', scrollY > 80);
+    }
 
-    // Carousel dots
-    document.querySelectorAll('.carousel-dot').forEach(dot => {
-      dot.addEventListener('click', () => {
-        const index = parseInt(dot.dataset.index);
-        this.state.currentCarouselIndex = index;
-        this.updateCarouselPreview(index);
-      });
-    });
-
-    // Keyboard navigation for carousel
-    document.addEventListener('keydown', (e) => {
-      if (e.target.closest('.carousel-section')) {
-        if (e.key === 'ArrowLeft' && this.state.currentCarouselIndex > 0) {
-          this.state.currentCarouselIndex--;
-          this.updateCarouselPreview(this.state.currentCarouselIndex);
-        }
-        if (e.key === 'ArrowRight' && this.state.currentCarouselIndex < roms.length - 1) {
-          this.state.currentCarouselIndex++;
-          this.updateCarouselPreview(this.state.currentCarouselIndex);
-        }
+    // Active nav link
+    const sections = document.querySelectorAll('section[id]');
+    sections.forEach(section => {
+      const rect = section.getBoundingClientRect();
+      if (rect.top < 200 && rect.bottom > 200) {
+        document.querySelectorAll('.nav-link').forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === `#${section.id}`);
+        });
       }
     });
   }
 
-  openDownloadModal(romId) {
-    const modal = window.modalModule;
-    if (modal) modal.open(romId);
+  // === EVENTS ===
+
+  bindEvents() {
+    // Carousel buttons
+    document.querySelector('.carousel-btn--prev')?.addEventListener('click', () => this.prevSlide());
+    document.querySelector('.carousel-btn--next')?.addEventListener('click', () => this.nextSlide());
+
+    // Dots
+    document.querySelectorAll('.dot').forEach(dot => {
+      dot.addEventListener('click', () => {
+        this.goToSlide(parseInt(dot.dataset.index));
+      });
+    });
+
+    // Keyboard
+    document.addEventListener('keydown', (e) => {
+      if (e.target.closest('.carousel-section')) {
+        if (e.key === 'ArrowLeft') this.prevSlide();
+        if (e.key === 'ArrowRight') this.nextSlide();
+      }
+    });
+
+    // Back to top
+    document.querySelector('.back-to-top')?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Modal close
+    document.querySelector('.modal-overlay')?.addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-overlay')) {
+        this.closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') this.closeModal();
+    });
+  }
+
+  // === MODAL ===
+
+  openModal(romId) {
+    const overlay = document.querySelector('.modal-overlay');
+    const content = overlay?.querySelector('.modal-content');
+    if (!overlay || !content) return;
+
+    const rom = roms.find(r => r.id === romId);
+    if (!rom) return;
+
+    this.selectedRegion = null;
+
+    content.innerHTML = `
+      <button class="modal-close">✕</button>
+      <div class="modal-header">
+        <h3 class="modal-title">Select Your Region</h3>
+        <p class="modal-desc">Choose your country for pricing</p>
+      </div>
+      <div class="region-options">
+        <div class="region-option" data-region="brazil">
+          <span class="region-name">Brazil</span>
+          <span class="region-price">R$8</span>
+        </div>
+        <div class="region-option" data-region="usa">
+          <span class="region-name">United States</span>
+          <span class="region-price">$2</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="proceed-btn" disabled>Proceed to Download</button>
+      </div>
+    `;
+
+    content.querySelector('.modal-close').addEventListener('click', () => this.closeModal());
+
+    content.querySelectorAll('.region-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        content.querySelectorAll('.region-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        this.selectedRegion = opt.dataset.region;
+        content.querySelector('#proceed-btn').disabled = false;
+      });
+    });
+
+    content.querySelector('#proceed-btn').addEventListener('click', () => this.showSuccess());
+
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  showSuccess() {
+    const content = document.querySelector('.modal-content');
+    if (!content) return;
+
+    content.innerHTML = `
+      <button class="modal-close">✕</button>
+      <div class="modal-success">
+        <div class="modal-success-icon">✓</div>
+        <h3 class="modal-title">Selection Confirmed</h3>
+        <p class="modal-desc" style="margin-top: 16px;">Head over to Telegram to proceed with payment.</p>
+      </div>
+      <div class="modal-footer" style="margin-top: 32px;">
+        <a href="https://t.me/nihilupdates" target="_blank" class="btn btn-primary">Open Telegram</a>
+      </div>
+    `;
+
+    content.querySelector('.modal-close').addEventListener('click', () => this.closeModal());
+  }
+
+  closeModal() {
+    const overlay = document.querySelector('.modal-overlay');
+    if (overlay) {
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  openFullscreen(src) {
+    // Simple fullscreen with overlay
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      background: rgba(0,0,0,0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    `;
+    
+    const img = document.createElement('img');
+    img.src = src;
+    img.style.cssText = 'max-width: 90%; max-height: 90vh; border-radius: 16px;';
+    
+    overlay.appendChild(img);
+    document.body.appendChild(overlay);
+    
+    overlay.addEventListener('click', () => overlay.remove());
   }
 }
 
-// Initialize
+// Init
 const app = new ProjectLainApp();
 document.addEventListener('DOMContentLoaded', () => app.init());
-
-export default app;
