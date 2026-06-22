@@ -1,99 +1,64 @@
-@font-face {
-  font-family: "SF Pro Display";
-  src: url("../assets/fonts/SF-Pro-Display-Regular.woff2") format("woff2"),
-       url("../assets/fonts/SF-Pro-Display-Regular.otf") format("opentype");
-  font-weight: 400; font-style: normal; font-display: swap;
+/* =============================================
+   PROJECT LAIN — TYPOGRAPHY
+   ============================================= */
+
+/* Google Fonts - Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* === Base === */
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
-@font-face {
-  font-family: "SF Pro Display";
-  src: url("../assets/fonts/SF-Pro-Display-Medium.woff2") format("woff2"),
-       url("../assets/fonts/SF-Pro-Display-Medium.otf") format("opentype");
-  font-weight: 500; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: "SF Pro Display";
-  src: url("../assets/fonts/SF-Pro-Display-Bold.woff2") format("woff2"),
-       url("../assets/fonts/SF-Pro-Display-Bold.otf") format("opentype");
-  font-weight: 700; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: "SF Pro Text";
-  src: url("../assets/fonts/SF-Pro-Text-Regular.woff2") format("woff2"),
-       url("../assets/fonts/SF-Pro-Text-Regular.otf") format("opentype");
-  font-weight: 400; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: "SF Pro Text";
-  src: url("../assets/fonts/SF-Pro-Text-Medium.woff2") format("woff2"),
-       url("../assets/fonts/SF-Pro-Text-Medium.otf") format("opentype");
-  font-weight: 500; font-style: normal; font-display: swap;
-}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  font-size: 1rem; line-height: 1.7; color: var(--color-text-secondary);
-  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-}
-.nav-link { font-size: 0.875rem; font-weight: 500; letter-spacing: 0.03em; }
-.hero-title {
-  font-size: clamp(3.5rem, 7vw, 5.5rem); font-weight: 700;
-  letter-spacing: -0.05em; line-height: 0.95;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-normal);
   color: var(--color-text-primary);
 }
-.section-title {
-  font-size: clamp(2rem, 4vw, 3rem); font-weight: 600;
-  letter-spacing: -0.03em; line-height: 1.1;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-  color: var(--color-text-primary);
+
+/* === Headings === */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  margin: 0;
 }
-.rom-title {
-  font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 600;
-  letter-spacing: -0.02em; line-height: 1.15;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-  color: var(--color-text-primary);
+
+h1 { font-size: clamp(48px, 8vw, 96px); font-weight: 900; }
+h2 { font-size: clamp(32px, 5vw, 56px); font-weight: 800; }
+h3 { font-size: clamp(24px, 4vw, 40px); font-weight: 700; }
+h4 { font-size: var(--font-size-2xl); font-weight: 600; }
+
+p {
+  margin: 0;
+  max-width: 65ch;
 }
-.body-text { max-width: 65ch; }
-.pill-text { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
-.badge-text { font-size: 0.625rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-.btn-text { font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; }
-.footer-text { font-size: 0.8125rem; color: var(--color-text-secondary); }
-.intro-logo {
-  font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700;
-  letter-spacing: -0.04em;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-  color: var(--color-text-primary);
+
+a {
+  color: inherit;
+  text-decoration: none;
 }
-.tech-title {
-  font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700;
-  letter-spacing: -0.04em; line-height: 1.05;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-  color: var(--color-text-primary);
+
+strong {
+  font-weight: 600;
 }
-.tech-description { font-size: 1.125rem; line-height: 1.8; max-width: 55ch; }
-.modal-content__title {
-  font-size: 1.5rem; font-weight: 600;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-  color: var(--color-text-primary); margin-bottom: var(--space-md);
+
+/* === Navigation === */
+.nav-link {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
-.rom-section-title {
-  font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
-  color: var(--color-text-secondary); margin-bottom: var(--space-md);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-}
-.badge {
-  display: inline-flex; align-items: center; padding: 4px 12px;
-  border-radius: var(--radius-full); font-size: 0.625rem; font-weight: 700;
-  letter-spacing: 0.08em; text-transform: uppercase;
-}
-.badge--stable {
-  background: var(--color-badge-stable-bg); color: var(--color-badge-stable-text);
-  border: 1px solid rgba(52, 199, 89, 0.3);
-}
-.badge--best {
-  background: var(--color-badge-best-bg); color: var(--color-badge-best-text);
-  border: 1px solid rgba(246, 195, 91, 0.3);
-}
-.badge--preview {
-  background: var(--color-badge-preview-bg); color: var(--color-badge-preview-text);
-  border: 1px solid rgba(90, 200, 250, 0.3);
+
+/* === Selection === */
+::selection {
+  background: var(--color-gold);
+  color: var(--color-bg-primary);
 }
