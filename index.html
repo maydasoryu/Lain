@@ -4,23 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="PROJECT LAIN — Performance-focused One UI experiences for Galaxy S20 FE (r8q).">
-  <meta name="theme-color" content="#000000">
-  
   <title>PROJECT LAIN — One UI Performance ROM</title>
   
   <link rel="icon" type="image/svg+xml" href="/assets/logos/project-lain.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/typography.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/animations.css">
-  <link rel="stylesheet" href="css/responsive.css">
-  <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
-  <a href="#main" class="skip-link">Skip to main content</a>
 
   <!-- Intro -->
   <div class="intro-overlay">
@@ -30,19 +25,15 @@
   </div>
 
   <!-- Background -->
-  <div class="background-layer">
-    <video class="background-video" autoplay muted loop playsinline>
-      <source src="/assets/video/bg.mp4" type="video/mp4">
-    </video>
-    <div class="background-fallback"></div>
-    <div class="ambient-overlay"></div>
-    <div class="ambient-light ambient-light--gold"></div>
-    <div class="ambient-light ambient-light--crimson"></div>
+  <div class="bg-layer">
+    <div class="bg-fallback"></div>
+    <div class="ambient-gold"></div>
+    <div class="ambient-crimson"></div>
   </div>
 
   <!-- Effects -->
   <div class="film-grain"></div>
-  <div class="scroll-progress"></div>
+  <div class="progress-bar"></div>
   <div class="cursor-glow"></div>
 
   <!-- Navigation -->
@@ -60,108 +51,68 @@
     </div>
   </nav>
 
-  <main id="main">
-    
+  <!-- Main -->
+  <main>
+
     <!-- Hero -->
     <section class="hero">
-      <div class="container">
-        <div class="hero-content">
-          <h1 class="hero-title reveal-3d">PROJECT LAIN</h1>
-          <p class="hero-subtitle reveal stagger stagger-1">
-            Performance-focused One UI experiences engineered exclusively for Galaxy S20 FE (r8q).
-          </p>
-          
-          <div class="meta-pills reveal stagger stagger-2">
-            <!-- JS -->
-          </div>
-          
-          <div class="btn-group reveal stagger stagger-3">
-            <a href="#variants" class="btn btn-primary btn-large">Explore Variants</a>
-            <a href="#community" class="btn btn-secondary btn-large">Community</a>
-          </div>
+      <div class="hero-content">
+        <h1 class="reveal-3d">PROJECT LAIN</h1>
+        <p class="hero-subtitle stagger stagger-1">
+          Performance-focused One UI experiences engineered exclusively for Galaxy S20 FE (r8q).
+        </p>
+        <div class="meta-pills stagger stagger-2"></div>
+        <div class="btn-group stagger stagger-3">
+          <a href="#variants" class="btn btn-primary btn-large">Explore Variants</a>
+          <a href="#community" class="btn btn-secondary btn-large">Community</a>
         </div>
-        
-        <div class="hero-visual">
-          <div class="hero-thumbnail reveal-3d-scale">
-            <img src="/assets/thumbnails/project-sakana.png" alt="Project Sakana">
-          </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-thumbnail">
+          <img src="/assets/thumbnails/project-sakana.png" alt="Project Sakana">
         </div>
       </div>
     </section>
 
     <!-- Technology -->
     <section id="technology" class="tech-section">
-      <div class="tech-panels">
-        <!-- JS -->
-      </div>
+      <div class="tech-panels"></div>
     </section>
 
-    <!-- ROM Carousel -->
+    <!-- Carousel -->
     <section id="variants" class="carousel-section">
       <div class="carousel-header">
         <h2 class="section-title reveal-3d">Choose Your Experience</h2>
-        <p class="section-desc reveal stagger stagger-1">Five distinct paths to peak performance.</p>
+        <p class="section-desc stagger stagger-1">Five distinct paths to peak performance.</p>
       </div>
       
-      <div class="rom-blueprint reveal">
-        <div class="rom-preview">
-          <img src="/assets/thumbnails/project-aether.png" alt="Project Aether">
-          <div class="rom-preview-info">
-            <h3 class="rom-preview-title">Project Aether</h3>
-            <div class="rom-preview-meta">
-              <span class="pill">Android 16</span>
-              <span class="badge badge-stable">STABLE</span>
-              <span class="pill">One UI 8</span>
-            </div>
-          </div>
-        </div>
+      <div class="rom-cards-wrapper">
+        <div class="rom-cards"></div>
       </div>
       
-      <div class="carousel-nav">
-        <button class="carousel-btn carousel-btn--prev" aria-label="Previous">
-          ←
-        </button>
-        
-        <div class="carousel-dots">
-          <button class="carousel-dot active" data-index="0"></button>
-          <button class="carousel-dot" data-index="1"></button>
-          <button class="carousel-dot" data-index="2"></button>
-          <button class="carousel-dot" data-index="3"></button>
-          <button class="carousel-dot" data-index="4"></button>
-        </div>
-        
-        <button class="carousel-btn carousel-btn--next" aria-label="Next">
-          →
-        </button>
+      <div class="carousel-controls">
+        <button class="carousel-btn carousel-btn--prev" disabled>←</button>
+        <div class="carousel-dots"></div>
+        <button class="carousel-btn carousel-btn--next">→</button>
       </div>
     </section>
 
     <!-- ROM Sections -->
-    <div class="rom-sections">
-      <!-- JS -->
-    </div>
+    <div class="rom-sections"></div>
 
     <!-- Gallery -->
     <section id="gallery" class="gallery-section">
       <div class="gallery-header">
         <h2 class="section-title reveal-3d">Gallery</h2>
-        <p class="section-desc reveal stagger stagger-1">Explore the refined One UI experience.</p>
+        <p class="section-desc stagger stagger-1">Explore the refined One UI experience.</p>
       </div>
-      
-      <div class="gallery-container">
-        <div class="gallery-track">
-          <!-- JS -->
-        </div>
-      </div>
+      <div class="gallery-track"></div>
     </section>
 
     <!-- Community -->
     <section id="community" class="community-section">
       <h2 class="section-title reveal-3d">Join the Community</h2>
-      
-      <div class="community-grid">
-        <!-- JS -->
-      </div>
+      <div class="community-grid"></div>
     </section>
 
   </main>
@@ -177,27 +128,17 @@
       <a href="https://t.me/nihilupdates" class="footer-link" target="_blank">Support</a>
       <a href="https://t.me/nihilupdates" class="footer-link" target="_blank">Downloads</a>
     </div>
-    <p class="footer-copyright">© 2026 PROJECT LAIN. All rights reserved.</p>
+    <p class="footer-copy">© 2026 PROJECT LAIN. All rights reserved.</p>
   </footer>
 
   <!-- Back to Top -->
-  <button class="back-to-top" aria-label="Back to top">↑</button>
+  <button class="back-to-top">↑</button>
 
   <!-- Modal -->
-  <div class="modal-overlay" role="dialog" aria-modal="true">
+  <div class="modal-overlay">
     <div class="modal">
-      <div class="modal-content">
-        <!-- JS -->
-      </div>
+      <div class="modal-content"></div>
     </div>
-  </div>
-
-  <!-- Fullscreen Gallery -->
-  <div class="fullscreen-gallery" role="dialog">
-    <button class="fullscreen-close" aria-label="Close">✕</button>
-    <button class="fullscreen-nav fullscreen-nav--prev" aria-label="Previous">←</button>
-    <img class="fullscreen-image" src="" alt="">
-    <button class="fullscreen-nav fullscreen-nav--next" aria-label="Next">→</button>
   </div>
 
   <script type="module" src="js/app.js"></script>
