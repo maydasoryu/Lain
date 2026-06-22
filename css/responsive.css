@@ -1,302 +1,223 @@
-/* =============================================
-   PROJECT LAIN — RESPONSIVE
-   ============================================= */
+/* Responsive Design Rules and Mobile Optimizations */
 
-/* === Tablet === */
-@media (max-width: 1024px) {
-  .hero {
-    grid-template-columns: 1fr !important;
-    text-align: center;
-    padding: 100px 24px 60px !important;
-  }
-  
-  .hero-content {
-    order: 1;
-  }
-  
-  .hero-visual {
-    order: 2;
-    display: none !important;
-  }
-  
-  .hero-subtitle {
-    margin: 0 auto 32px;
-  }
-  
-  .meta-pills,
-  .btn-group {
-    justify-content: center;
-  }
-  
-  .nav-links {
-    display: none;
-  }
-  
-  .rom-header {
-    grid-template-columns: 1fr !important;
-    gap: 32px !important;
-  }
-  
-  .rom-header--reversed {
-    direction: ltr !important;
-  }
-  
-  .community-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+/* Media Query: Laptop (1024px to 1439px) */
+@media (max-width: 1440px) {
+  :root {
+    --max-width-content: 1100px;
   }
 }
 
-/* === Mobile === */
+@media (max-width: 1200px) {
+  .hero-left {
+    width: 50%;
+  }
+  .hero-right {
+    width: 45%;
+  }
+  .rom-detail-grid {
+    gap: 40px;
+  }
+}
+
+/* Media Query: Tablet (768px to 1023px) */
+@media (max-width: 1024px) {
+  section {
+    padding: 80px 0;
+  }
+  
+  .hero {
+    height: auto;
+    padding: 120px 0 80px 0;
+  }
+  
+  .hero .container {
+    flex-direction: column-reverse;
+    gap: 60px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .hero-left {
+    width: 100%;
+    text-align: center;
+    align-items: center;
+  }
+  
+  .hero-right {
+    width: 100%;
+    height: auto;
+  }
+  
+  .rom-detail-grid,
+  .rom-detail-section.alternate .rom-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  
+  .rom-detail-section.alternate .rom-detail-grid > :first-child {
+    order: 1;
+  }
+  .rom-detail-section.alternate .rom-detail-grid > :last-child {
+    order: 2;
+  }
+  
+  .footer-grid {
+    grid-template-columns: 1.5fr 1fr;
+    gap: 40px;
+  }
+}
+
+/* Media Query: Mobile (Up to 767px) */
 @media (max-width: 768px) {
+  section {
+    padding: 60px 0;
+  }
+  
+  /* Disable 3D tilt & cursor glow on mobile as requested */
+  .hero-image-showcase {
+    transform: none !important;
+  }
+  
+  .cursor-glow {
+    display: none !important;
+  }
+  
+  /* Stack everything vertically */
+  .nav-container {
+    padding: 0 16px;
+  }
+  
+  /* Toggle Nav menu */
+  nav {
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    width: 100%;
+    height: calc(100vh - var(--nav-height));
+    background: rgba(5, 5, 5, 0.95);
+    backdrop-filter: blur(var(--blur-nav));
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: transform var(--duration-default) var(--ease-premium), 
+                opacity var(--duration-default) var(--ease-premium);
+    z-index: 99;
+    pointer-events: none;
+  }
+  
+  nav.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .mobile-menu-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 26px;
+    height: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 101;
+  }
+  
+  .mobile-menu-toggle span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: var(--text-primary);
+    border-radius: 2px;
+    transition: transform var(--duration-micro) var(--ease-premium), 
+                opacity var(--duration-micro) var(--ease-premium);
+  }
+  
+  .mobile-menu-toggle.open span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  
+  .mobile-menu-toggle.open span:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .mobile-menu-toggle.open span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+  
+  /* Technical Panel Heights */
+  .tech-panel {
+    height: auto;
+    min-height: 80vh;
+    padding: 60px 0;
+  }
+  
+  /* Footer layout */
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  /* Modals adjustments */
+  .modal-container {
+    padding: 30px 24px;
+    border-radius: 24px;
+  }
+  
+  .modal-title {
+    font-size: 1.5rem;
+  }
+  
+  .region-btn {
+    padding: 14px 18px;
+    font-size: 1rem;
+  }
+  
+  /* Screen sliders size */
+  .gallery-slider-wrapper {
+    height: 440px;
+  }
+  
+  .gallery-slide {
+    width: 180px;
+    height: 390px;
+  }
+}
+
+/* Media Query: Very Small Screens (Up to 480px) */
+@media (max-width: 480px) {
   :root {
     --nav-height: 64px;
   }
   
-  body {
-    font-size: 15px;
-  }
-  
-  .nav {
-    padding: 0 24px;
-    height: 64px;
-  }
-  
-  .nav-logo img {
-    height: 28px;
-  }
-  
-  .hero {
-    padding: 80px 16px 48px;
-  }
-  
   .hero-title {
-    font-size: clamp(36px, 10vw, 56px);
-  }
-  
-  .hero-subtitle {
-    font-size: 15px;
-  }
-  
-  .meta-pills {
-    gap: 8px;
-  }
-  
-  .pill {
-    padding: 6px 12px;
-    font-size: 10px;
+    font-size: clamp(2.4rem, 9vw, 3.2rem);
   }
   
   .btn {
+    width: 100%;
     padding: 14px 24px;
-    font-size: 13px;
   }
   
-  .btn-large {
-    padding: 16px 32px;
-    font-size: 14px;
+  .hero-left .metadata-pills {
+    justify-content: center;
   }
   
-  .tech-section,
-  .carousel-section,
-  .rom-section,
-  .gallery-section,
-  .community-section {
-    padding: 80px 16px;
-  }
-  
-  .section-title {
-    font-size: clamp(28px, 8vw, 40px);
-  }
-  
-  .section-desc {
-    font-size: 15px;
-  }
-  
-  .rom-blueprint {
-    padding: 0 16px;
-  }
-  
-  .rom-preview-info {
-    padding: 20px;
-  }
-  
-  .rom-preview-title {
-    font-size: 20px;
-  }
-  
-  .carousel-nav {
+  .carousel-controls {
     gap: 16px;
   }
   
   .carousel-btn {
     width: 48px;
     height: 48px;
-    font-size: 18px;
-  }
-  
-  .carousel-dots {
-    gap: 8px;
-  }
-  
-  .carousel-dot {
-    width: 8px;
-    height: 8px;
-  }
-  
-  .rom-title {
-    font-size: clamp(24px, 6vw, 36px);
-  }
-  
-  .rom-desc {
-    font-size: 15px;
-  }
-  
-  .rom-detail-label {
-    width: 120px;
-    font-size: 13px;
-  }
-  
-  .rom-detail-value {
-    font-size: 13px;
-  }
-  
-  .changelog-item {
-    font-size: 14px;
-  }
-  
-  .gallery-container {
-    height: 400px;
-  }
-  
-  .gallery-item {
-    width: 200px;
-  }
-  
-  .community-item {
-    padding: 32px 24px;
-  }
-  
-  .footer {
-    padding: 48px 16px;
-  }
-  
-  .footer-logo img {
-    height: 36px;
-  }
-  
-  .footer-links {
-    gap: 24px;
-  }
-  
-  .back-to-top {
-    bottom: 16px;
-    right: 16px;
-    width: 44px;
-    height: 44px;
-  }
-  
-  .modal {
-    padding: 32px 24px;
-    margin: 16px;
-  }
-  
-  .fullscreen-close {
-    top: 16px;
-    right: 16px;
-    width: 44px;
-    height: 44px;
-  }
-  
-  .fullscreen-nav--prev {
-    left: 8px;
-  }
-  
-  .fullscreen-nav--next {
-    right: 8px;
-  }
-}
-
-/* === Small Mobile === */
-@media (max-width: 480px) {
-  .hero-title {
-    font-size: clamp(32px, 12vw, 48px);
-  }
-  
-  .btn-group {
-    flex-direction: column;
-  }
-  
-  .btn-group .btn {
-    width: 100%;
-  }
-  
-  .carousel-dots {
-    display: none;
-  }
-  
-  .gallery-container {
-    height: 300px;
-  }
-  
-  .gallery-item {
-    width: 160px;
-  }
-}
-
-/* === Landscape Mobile === */
-@media (max-height: 500px) and (orientation: landscape) {
-  .hero {
-    min-height: auto;
-    padding: 60px 24px;
-  }
-  
-  .hero-visual {
-    display: none;
-  }
-  
-  .intro-logo img {
-    width: 80px;
-    height: 80px;
-  }
-}
-
-/* === Touch Device === */
-@media (hover: none) and (pointer: coarse) {
-  .hero-thumbnail {
-    transform: none !important;
-  }
-  
-  .carousel-btn:hover,
-  .community-item:hover,
-  .btn:hover {
-    transform: none;
-  }
-}
-
-/* === Reduced Motion === */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-  
-  .reveal,
-  .reveal-3d,
-  .reveal-3d-left,
-  .reveal-3d-right,
-  .reveal-3d-scale,
-  .stagger {
-    opacity: 1 !important;
-    transform: none !important;
-    filter: none !important;
-  }
-  
-  .cursor-glow,
-  .film-grain,
-  .ambient-light {
-    display: none;
   }
 }
