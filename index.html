@@ -3,225 +3,203 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Project Lain — Performance-focused One UI custom ROMs engineered exclusively for Samsung Galaxy S20 FE (r8q).">
+  <meta name="description" content="PROJECT LAIN — Performance-focused One UI experiences for Galaxy S20 FE (r8q).">
   <meta name="theme-color" content="#000000">
-  <title>Project Lain</title>
-  <link rel="icon" href="assets/logos/project-lain.svg" type="image/svg+xml">
+  
+  <title>PROJECT LAIN — One UI Performance ROM</title>
+  
+  <link rel="icon" type="image/svg+xml" href="/assets/logos/project-lain.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/typography.css">
   <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
-  <!-- Intro Sequence -->
-  <div class="intro" id="intro" aria-hidden="true">
-    <div class="intro__content">
-      <div class="intro__light-sweep"></div>
-      <div class="intro__logo" id="intro-logo">
-        <span class="intro-logo">PROJECT LAIN</span>
-      </div>
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <!-- Intro -->
+  <div class="intro-overlay">
+    <div class="intro-logo">
+      <img src="/assets/logos/project-lain.svg" alt="PROJECT LAIN">
     </div>
   </div>
 
-  <!-- Scroll Progress -->
-  <div class="scroll-progress" id="scroll-progress" role="progressbar" aria-label="Page scroll progress"></div>
-
-  <!-- Background Layers -->
-  <div class="bg-layers" aria-hidden="true">
-    <video class="bg-video" autoplay muted loop playsinline poster="assets/video/fallback.jpg" id="bg-video">
-      <source src="assets/video/bg.mp4" type="video/mp4">
+  <!-- Background -->
+  <div class="background-layer">
+    <video class="background-video" autoplay muted loop playsinline>
+      <source src="/assets/video/bg.mp4" type="video/mp4">
     </video>
-    <div class="bg-overlay"></div>
-    <div class="bg-glow-gold parallax-bg" data-speed="0.02"></div>
-    <div class="bg-glow-crimson parallax-bg" data-speed="0.015"></div>
-    <div class="bg-grain"></div>
+    <div class="background-fallback"></div>
+    <div class="ambient-overlay"></div>
+    <div class="ambient-light ambient-light--gold"></div>
+    <div class="ambient-light ambient-light--crimson"></div>
   </div>
 
-  <!-- Cursor Glow -->
-  <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
+  <!-- Effects -->
+  <div class="film-grain"></div>
+  <div class="scroll-progress"></div>
+  <div class="cursor-glow"></div>
 
   <!-- Navigation -->
-  <nav class="main-nav is-transparent" id="main-nav" aria-label="Main navigation">
-    <div class="main-nav__inner">
-      <a href="#" class="main-nav__logo" aria-label="Project Lain home">
-        <span class="main-nav__logo-text">PROJECT LAIN</span>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <img src="/assets/logos/project-lain.svg" alt="PROJECT LAIN">
       </a>
-      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
-        <span class="nav-toggle__bar"></span>
-        <span class="nav-toggle__bar"></span>
-        <span class="nav-toggle__bar"></span>
-      </button>
-      <ul class="main-nav__links" id="nav-links"></ul>
+      <ul class="nav-links">
+        <li><a href="#technology" class="nav-link">Technology</a></li>
+        <li><a href="#variants" class="nav-link">Variants</a></li>
+        <li><a href="#gallery" class="nav-link">Gallery</a></li>
+        <li><a href="#community" class="nav-link">Community</a></li>
+      </ul>
     </div>
   </nav>
 
-  <!-- Page Content -->
-  <main id="page-content" class="modal-page-blur">
-    <section class="section section--hero" id="hero">
+  <main id="main">
+    
+    <!-- Hero -->
+    <section class="hero">
       <div class="container">
-        <div class="grid grid--hero">
-          <div class="hero-content" id="hero-content">
-            <h1 class="hero-title reveal" id="hero-title"></h1>
-            <p class="hero-tagline body-text reveal reveal--delay-1" id="hero-tagline"></p>
-            <div class="pill-group hero-pills reveal reveal--delay-2" id="hero-pills"></div>
-            <div class="hero-actions reveal reveal--delay-3" id="hero-actions"></div>
+        <div class="hero-content">
+          <h1 class="hero-title reveal-3d">PROJECT LAIN</h1>
+          <p class="hero-subtitle reveal stagger stagger-1">
+            Performance-focused One UI experiences engineered exclusively for Galaxy S20 FE (r8q).
+          </p>
+          
+          <div class="meta-pills reveal stagger stagger-2">
+            <!-- JS -->
           </div>
-          <div class="hero-image-container hero-parallax reveal reveal--delay-4" id="hero-image-container">
-            <img id="hero-image" src="" alt="">
+          
+          <div class="btn-group reveal stagger stagger-3">
+            <a href="#variants" class="btn btn-primary btn-large">Explore Variants</a>
+            <a href="#community" class="btn btn-secondary btn-large">Community</a>
           </div>
         </div>
-      </div>
-    </section>
-
-    <section class="section section--technology" id="technology"></section>
-
-    <section class="section" id="variants">
-      <div class="container">
-        <header class="section-header">
-          <p class="section-header__subtitle reveal">The Collection</p>
-          <h2 class="section-title reveal reveal--delay-1">ROM Variants</h2>
-          <div class="section-header__divider reveal reveal--delay-2"></div>
-        </header>
-        <div class="carousel" id="rom-carousel" role="region" aria-label="ROM variants carousel">
-          <div class="carousel__track" id="carousel-track"></div>
-          <div class="carousel__controls">
-            <button class="carousel__btn" id="carousel-prev" aria-label="Previous ROM">&#8249;</button>
-            <div class="carousel__dots" id="carousel-dots" role="tablist" aria-label="ROM selection"></div>
-            <button class="carousel__btn" id="carousel-next" aria-label="Next ROM">&#8250;</button>
+        
+        <div class="hero-visual">
+          <div class="hero-thumbnail reveal-3d-scale">
+            <img src="/assets/thumbnails/project-sakana.png" alt="Project Sakana">
           </div>
         </div>
       </div>
     </section>
 
-    <div id="rom-details"></div>
+    <!-- Technology -->
+    <section id="technology" class="tech-section">
+      <div class="tech-panels">
+        <!-- JS -->
+      </div>
+    </section>
 
-    <section class="section" id="gallery">
-      <div class="container">
-        <header class="section-header">
-          <p class="section-header__subtitle reveal">Preview</p>
-          <h2 class="section-title reveal reveal--delay-1">Gallery</h2>
-          <div class="section-header__divider reveal reveal--delay-2"></div>
-        </header>
-        <div class="gallery-container" id="gallery-container">
-          <div class="gallery-track" id="gallery-track"></div>
-          <div class="gallery-controls">
-            <button class="carousel__btn" id="gallery-prev" aria-label="Previous screenshot">&#8249;</button>
-            <button class="carousel__btn" id="gallery-next" aria-label="Next screenshot">&#8250;</button>
+    <!-- ROM Carousel -->
+    <section id="variants" class="carousel-section">
+      <div class="carousel-header">
+        <h2 class="section-title reveal-3d">Choose Your Experience</h2>
+        <p class="section-desc reveal stagger stagger-1">Five distinct paths to peak performance.</p>
+      </div>
+      
+      <div class="rom-blueprint reveal">
+        <div class="rom-preview">
+          <img src="/assets/thumbnails/project-aether.png" alt="Project Aether">
+          <div class="rom-preview-info">
+            <h3 class="rom-preview-title">Project Aether</h3>
+            <div class="rom-preview-meta">
+              <span class="pill">Android 16</span>
+              <span class="badge badge-stable">STABLE</span>
+              <span class="pill">One UI 8</span>
+            </div>
           </div>
         </div>
       </div>
-    </section>
-
-    <section class="section section--community" id="community">
-      <div class="container container--narrow">
-        <header class="section-header">
-          <p class="section-header__subtitle reveal">Connect</p>
-          <h2 class="section-title reveal reveal--delay-1">Community</h2>
-          <div class="section-header__divider reveal reveal--delay-2"></div>
-        </header>
-        <ul class="community-links" id="community-links" role="list"></ul>
+      
+      <div class="carousel-nav">
+        <button class="carousel-btn carousel-btn--prev" aria-label="Previous">
+          ←
+        </button>
+        
+        <div class="carousel-dots">
+          <button class="carousel-dot active" data-index="0"></button>
+          <button class="carousel-dot" data-index="1"></button>
+          <button class="carousel-dot" data-index="2"></button>
+          <button class="carousel-dot" data-index="3"></button>
+          <button class="carousel-dot" data-index="4"></button>
+        </div>
+        
+        <button class="carousel-btn carousel-btn--next" aria-label="Next">
+          →
+        </button>
       </div>
     </section>
 
-    <footer class="footer" id="footer">
-      <div class="container">
-        <div class="footer__content">
-          <img src="assets/logos/project-lain.svg" alt="Project Lain logo" class="footer__logo" onerror="this.outerHTML='<span class=main-nav__logo-text>PROJECT LAIN</span>'">
-          <p class="footer-text" id="footer-device"></p>
-          <ul class="footer__links" id="footer-links"></ul>
-          <p class="footer-text" id="footer-copyright"></p>
-          <button class="back-to-top" id="back-to-top" aria-label="Back to top">&#8593;</button>
+    <!-- ROM Sections -->
+    <div class="rom-sections">
+      <!-- JS -->
+    </div>
+
+    <!-- Gallery -->
+    <section id="gallery" class="gallery-section">
+      <div class="gallery-header">
+        <h2 class="section-title reveal-3d">Gallery</h2>
+        <p class="section-desc reveal stagger stagger-1">Explore the refined One UI experience.</p>
+      </div>
+      
+      <div class="gallery-container">
+        <div class="gallery-track">
+          <!-- JS -->
         </div>
       </div>
-    </footer>
+    </section>
+
+    <!-- Community -->
+    <section id="community" class="community-section">
+      <h2 class="section-title reveal-3d">Join the Community</h2>
+      
+      <div class="community-grid">
+        <!-- JS -->
+      </div>
+    </section>
+
   </main>
 
-  <!-- Download Modal -->
-  <div class="modal-overlay" id="download-modal" role="dialog" aria-modal="true" aria-label="Download ROM">
-    <div class="modal-content">
-      <button class="modal-content__close" id="modal-close" aria-label="Close modal">&#215;</button>
-      <div class="modal-step--region" id="modal-step-region">
-        <h3 class="modal-content__title">Select Your Region</h3>
-        <p class="modal-content__rom-name" id="modal-rom-name"></p>
-        <div class="region-options" id="region-options" role="radiogroup" aria-label="Region selection">
-          <button class="region-option" data-region="br" role="radio" aria-checked="false" tabindex="0">
-            <span class="region-option__flag">&#127463;&#127479;</span>
-            <span class="region-option__label">Brazil</span>
-            <span class="region-option__price" id="price-brl"></span>
-          </button>
-          <button class="region-option" data-region="us" role="radio" aria-checked="false" tabindex="0">
-            <span class="region-option__flag">&#127482;&#127480;</span>
-            <span class="region-option__label">United States</span>
-            <span class="region-option__price" id="price-usd"></span>
-          </button>
-        </div>
-      </div>
-      <div class="modal-step--payment" id="modal-step-payment">
-        <p class="modal-payment__message">Head over to Telegram to proceed with payment.</p>
-        <a class="btn btn--primary" id="telegram-btn" href="https://t.me/nihilupdates" target="_blank" rel="noopener noreferrer">Open Telegram</a>
+  <!-- Footer -->
+  <footer class="footer">
+    <a href="#" class="footer-logo">
+      <img src="/assets/logos/project-lain.svg" alt="PROJECT LAIN">
+    </a>
+    <p class="footer-device">Supported Device: Galaxy S20 FE (r8q)</p>
+    <div class="footer-links">
+      <a href="https://t.me/nihilupdates" class="footer-link" target="_blank">Telegram</a>
+      <a href="https://t.me/nihilupdates" class="footer-link" target="_blank">Support</a>
+      <a href="https://t.me/nihilupdates" class="footer-link" target="_blank">Downloads</a>
+    </div>
+    <p class="footer-copyright">© 2026 PROJECT LAIN. All rights reserved.</p>
+  </footer>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" aria-label="Back to top">↑</button>
+
+  <!-- Modal -->
+  <div class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modal-content">
+        <!-- JS -->
       </div>
     </div>
   </div>
 
-  <!-- Gallery Fullscreen -->
-  <div class="gallery-fullscreen" id="gallery-fullscreen" role="dialog" aria-modal="true" aria-label="Fullscreen screenshot viewer">
-    <button class="gallery-fullscreen__close" id="gallery-fullscreen-close" aria-label="Close fullscreen view">&#215;</button>
-    <img id="gallery-fullscreen-img" src="" alt="">
+  <!-- Fullscreen Gallery -->
+  <div class="fullscreen-gallery" role="dialog">
+    <button class="fullscreen-close" aria-label="Close">✕</button>
+    <button class="fullscreen-nav fullscreen-nav--prev" aria-label="Previous">←</button>
+    <img class="fullscreen-image" src="" alt="">
+    <button class="fullscreen-nav fullscreen-nav--next" aria-label="Next">→</button>
   </div>
 
-  <!-- Templates -->
-  <template id="nav-link-template"><li><a class="nav-link" data-link href="#"></a></li></template>
-  <template id="tech-panel-template">
-    <div class="tech-panel" data-panel>
-      <div class="tech-panel__ambient" data-ambient></div>
-      <div class="tech-panel__content reveal">
-        <h2 class="tech-title" data-title></h2>
-        <p class="tech-description body-text" data-description style="margin-top: var(--space-lg); margin-left: auto; margin-right: auto;"></p>
-      </div>
-    </div>
-  </template>
-  <template id="carousel-card-template">
-    <div class="carousel__card" data-card>
-      <div class="carousel__card-img"><img data-thumbnail src="" alt=""></div>
-      <h3 class="rom-title carousel__card-title" data-name></h3>
-      <div class="carousel__card-meta" data-meta></div>
-      <span class="badge" data-badge></span>
-    </div>
-  </template>
-  <template id="rom-detail-template">
-    <section class="rom-detail section" data-rom-detail>
-      <div class="rom-detail__ambient" data-ambient></div>
-      <div class="container">
-        <div class="grid grid--two-col" data-grid>
-          <div class="rom-image-container reveal" data-image><img data-thumbnail src="" alt=""></div>
-          <div class="rom-detail__content reveal reveal--delay-1" data-content>
-            <h2 class="rom-title" data-name></h2>
-            <div class="rom-meta" data-meta></div>
-            <p class="rom-description body-text" data-description></p>
-            <div data-kernel></div><div data-changelog></div><div data-issues></div><div data-credits></div>
-            <button class="btn btn--primary rom-download-btn" data-download-btn>Download</button>
-          </div>
-        </div>
-      </div>
-    </section>
-  </template>
-  <template id="gallery-item-template"><div class="gallery-item reveal" data-gallery-item><img data-screenshot src="" alt=""></div></template>
-  <template id="community-link-template">
-    <li><a class="community-link" data-link href="" target="_blank" rel="noopener noreferrer"><div class="community-link__name" data-name></div><div class="community-link__desc" data-description></div></a></li>
-  </template>
-  <template id="footer-link-template"><li><a data-link href="" target="_blank" rel="noopener noreferrer"></a></li></template>
-
-  <!-- Scripts -->
-  <script type="module" src="js/accessibility.js"></script>
-  <script type="module" src="js/scroll.js"></script>
-  <script type="module" src="js/navigation.js"></script>
-  <script type="module" src="js/reveal.js"></script>
-  <script type="module" src="js/carousel.js"></script>
-  <script type="module" src="js/gallery.js"></script>
-  <script type="module" src="js/parallax.js"></script>
-  <script type="module" src="js/modal.js"></script>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
