@@ -1,27 +1,25 @@
 /* =============================================
-   PROJECT LAIN — CSS VARIABLES
+   PROJECT LAIN — VARIABLES
    ============================================= */
 
 :root {
-  /* === Colors === */
-  --color-bg-primary: #000000;
-  --color-bg-secondary: #050505;
-  --color-bg-tertiary: #0a0a0a;
+  /* Colors */
+  --gold: #F6C35B;
+  --crimson: #8F1820;
+  --gold-bright: #FFD97D;
+  --crimson-bright: #D44550;
   
-  --color-gold: #F6C35B;
-  --color-gold-bright: #FFD97D;
-  --color-gold-dark: #D4A83A;
-  --color-crimson: #8F1820;
-  --color-crimson-bright: #D44550;
+  --bg-primary: #000000;
+  --bg-secondary: #050505;
   
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: rgba(255, 255, 255, 0.7);
-  --color-text-tertiary: rgba(255, 255, 255, 0.45);
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-tertiary: rgba(255, 255, 255, 0.45);
   
-  --color-glass-bg: rgba(255, 255, 255, 0.04);
-  --color-glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
   
-  /* === Spacing === */
+  /* Spacing */
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;
@@ -32,61 +30,27 @@
   --space-4xl: 6rem;
   --space-5xl: 8rem;
   
-  /* === Typography === */
-  --font-family-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-family-text: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 2rem;
-  --font-size-4xl: 2.5rem;
-  --font-size-5xl: 3rem;
-  
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  
-  --letter-spacing-tight: -0.04em;
-  --line-height-tight: 0.9;
-  --line-height-normal: 1.5;
-  --line-height-relaxed: 1.75;
-  
-  /* === Shadows === */
-  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 12px 40px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 24px 80px rgba(0, 0, 0, 0.4);
-  --shadow-xl: 0 40px 100px rgba(0, 0, 0, 0.5);
-  
-  --shadow-glow-gold: 0 0 60px rgba(246, 194, 91, 0.2), 0 0 120px rgba(246, 194, 91, 0.1);
-  --shadow-glow-crimson: 0 0 60px rgba(143, 24, 32, 0.2), 0 0 120px rgba(143, 24, 32, 0.1);
-  --shadow-glow-intense: 0 0 80px rgba(246, 194, 91, 0.3), 0 0 160px rgba(246, 194, 91, 0.15);
-  
-  /* === Blur === */
+  /* Blur */
   --blur-sm: 8px;
   --blur-md: 16px;
   --blur-lg: 32px;
   --blur-xl: 48px;
   
-  /* === Borders === */
-  --border-radius-sm: 8px;
-  --border-radius-md: 12px;
-  --border-radius-lg: 16px;
-  --border-radius-xl: 24px;
-  --border-radius-full: 9999px;
+  /* Shadows */
+  --shadow-glow: 0 0 60px rgba(246, 194, 91, 0.2);
+  --shadow-glow-intense: 0 0 80px rgba(246, 194, 91, 0.3);
   
-  /* === Z-Index === */
-  --z-base: 1;
-  --z-overlay: 10;
-  --z-nav: 1000;
-  --z-modal: 2000;
+  /* Borders */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+  
+  /* Font */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* === Reduced Motion === */
 @media (prefers-reduced-motion: reduce) {
   :root {
     --blur-sm: 0;
