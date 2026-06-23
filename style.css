@@ -1,5 +1,14 @@
 /* Made by mcysync (t.me/maydasoryu) | Project Lain 2k26 Rights Reserved */
 
+/* --- CUSTOM FONT IMPORT --- */
+@font-face {
+    font-family: 'SamsungSharp';
+    src: url('font/Samsung-Sharp-Sans-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
 /* --- LUXURY THEME VARIABLES --- */
 :root {
     --bg-black: #050505;
@@ -15,7 +24,7 @@
     --glass-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.8);
     --glass-highlight: rgba(255, 255, 255, 0.05);
     
-    --font-serif: 'Cinzel', serif;
+    --font-heading: 'SamsungSharp', sans-serif;
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -39,18 +48,15 @@ html, body {
 .mb-4 { margin-bottom: 2rem; }
 .inline { display: inline-block; padding: 0; }
 
-/* --- STRICT BACKGROUND FIXES --- */
+/* --- STRICT BACKGROUND ADAPTIVE FIXES --- */
 .site-background {
     position: fixed; top: 0; left: 0; width: 100%; 
     height: 100vh; height: 100dvh; 
-    
-    /* Using strict relative path and foolproof background properties */
     background-color: var(--bg-black);
-    background-image: url('./assets/bg.jpg');
+    background-image: url('assets/bg.jpg');
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
-    
     z-index: -3; animation: bgParallax 40s infinite alternate linear; 
     will-change: transform;
 }
@@ -87,7 +93,7 @@ html, body {
 #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100dvh; z-index: -2; pointer-events: none; }
 
 /* --- TYPOGRAPHY & CONTINUOUS ANIMATIONS --- */
-h1, h2, h3, .nav-logo, .loader-logo, .footer-logo { font-family: var(--font-serif); font-weight: 600; }
+h1, h2, h3, .nav-logo, .loader-logo, .footer-logo { font-family: var(--font-heading); font-weight: bold; }
 h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; margin-bottom: 3rem; }
 
 .shimmer-text {
@@ -105,27 +111,31 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
 }
 @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-/* --- DEEP GLASSMORPHISM PANELS & MOBILE SHADOW FIXES --- */
+
+/* ======================================================= */
+/* --- BULLETPROOF MOBILE SHADOW FIX (IOS BLUR FIX)    --- */
+/* ======================================================= */
 .glass-panel {
-    background: var(--glass-bg);
-    backdrop-filter: blur(28px) saturate(130%); -webkit-backdrop-filter: blur(28px) saturate(130%);
     border: 1px solid var(--glass-border);
     border-top: 1px solid rgba(255, 255, 255, 0.15); border-left: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px; box-shadow: var(--glass-shadow); padding: 2.5rem;
+    border-radius: 20px; 
+    box-shadow: var(--glass-shadow); /* Shadow placed cleanly on parent */
+    padding: 2.5rem;
     transition: box-shadow 0.5s ease, border-color 0.5s ease;
-    position: relative; overflow: hidden; transform-style: preserve-3d; will-change: transform;
-    
-    /* MOBILE IOS BOXY SHADOW FIXES */
-    isolation: isolate;
-    -webkit-backface-visibility: hidden;
-    -moz-backface-visibility: hidden;
-    -webkit-transform: translate3d(0, 0, 0);
-    background-clip: padding-box;
+    position: relative; z-index: 1; transform-style: preserve-3d; will-change: transform;
+    background: transparent; /* Remove parent background */
+}
+/* Blur pushed into absolute layer to prevent WebKit square shadow bug */
+.glass-panel::after {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    border-radius: inherit; background: var(--glass-bg);
+    backdrop-filter: blur(28px) saturate(130%); -webkit-backdrop-filter: blur(28px) saturate(130%);
+    -webkit-mask-image: -webkit-radial-gradient(white, black); /* Final safety force */
 }
 .glass-panel::before {
     content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
     background: linear-gradient(to right, transparent, var(--glass-highlight), transparent);
-    transform: skewX(-20deg); transition: 0.7s ease; z-index: 1; pointer-events: none;
+    transform: skewX(-20deg); transition: 0.7s ease; z-index: 1; pointer-events: none; border-radius: inherit;
 }
 .glass-panel:hover::before { left: 150%; }
 .glass-panel:hover {
@@ -133,6 +143,8 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
     box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.9), 0 0 30px rgba(191, 149, 63, 0.15);
 }
 .glass-panel > * { transform: translateZ(30px); }
+/* ======================================================= */
+
 
 /* --- HEADER & MOBILE MENU --- */
 #navbar { position: fixed; top: 0; left: 0; width: 100%; padding: 1.5rem 0; z-index: 100; transition: var(--transition-smooth); }
@@ -167,23 +179,26 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
 .hero-content.visible .delay-3 { transition-delay: 0.6s; }
 .hero-content.visible .delay-4 { transition-delay: 0.8s; }
 
-/* --- PREMIUM BUTTON --- */
+/* --- PREMIUM BUTTON FIX --- */
 .premium-btn {
     display: inline-flex; align-items: center; justify-content: center; padding: 1rem 2.5rem;
-    background: rgba(10, 10, 10, 0.5); backdrop-filter: blur(12px); border: 1px solid var(--gold-base);
-    border-radius: 30px; color: var(--gold-champagne); text-decoration: none;
+    border: 1px solid var(--gold-base); border-radius: 30px; color: var(--gold-champagne); text-decoration: none;
     font-weight: 600; font-size: 1rem; letter-spacing: 1px; position: relative; overflow: hidden;
-    transition: var(--transition-smooth); cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); white-space: nowrap;
-    isolation: isolate; -webkit-transform: translate3d(0, 0, 0); background-clip: padding-box;
+    transition: var(--transition-smooth); cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); white-space: nowrap; z-index: 1; background: transparent;
+}
+.premium-btn::after {
+    content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit;
+    background: rgba(10, 10, 10, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 .premium-btn:hover {
-    transform: translateY(-3px) scale(1.02) translateZ(0); background: rgba(191, 149, 63, 0.15);
-    box-shadow: 0 10px 30px rgba(191, 149, 63, 0.3); border-color: var(--gold-champagne);
+    transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 30px rgba(191, 149, 63, 0.3); border-color: var(--gold-champagne);
 }
+.premium-btn:hover::after { background: rgba(191, 149, 63, 0.15); }
 .btn-shine {
     position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
     background: linear-gradient(to right, transparent, rgba(243, 229, 171, 0.4), transparent);
-    transform: skewX(-20deg); animation: buttonShine 3s infinite;
+    transform: skewX(-20deg); animation: buttonShine 3s infinite; z-index: 0;
 }
 @keyframes buttonShine { 0% { left: -100%; } 20%, 100% { left: 200%; } }
 
@@ -200,8 +215,8 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
 /* --- CREDITS SECTION --- */
 .credits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
 .credit-card { text-align: center; padding: 2rem; }
-.credit-role { color: var(--gold-champagne); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem; opacity: 0.8; font-weight: 600; }
-.credit-name { font-size: 1.5rem; color: var(--text-main); margin-bottom: 0.5rem; font-family: var(--font-serif); }
+.credit-role { color: var(--gold-champagne); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem; opacity: 0.8; font-weight: 600; font-family: var(--font-sans); }
+.credit-name { font-size: 1.5rem; color: var(--text-main); margin-bottom: 0.5rem; font-family: var(--font-heading); }
 .credit-card p { color: var(--text-muted); font-size: 0.95rem; }
 .credit-link { color: var(--gold-base); text-decoration: none; transition: color 0.3s; font-size: 0.95rem; font-weight: 500; display: inline-block; word-break: break-word; }
 .credit-link:hover { color: var(--gold-champagne); text-decoration: underline; }
@@ -215,9 +230,6 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
     width: 280px; height: 580px; background: #000; border-radius: 40px; border: 8px solid #222;
     box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 0 2px #444, 0 0 40px rgba(191, 149, 63, 0.1);
     overflow: hidden; transition: transform 0.4s ease; transform-style: preserve-3d;
-    
-    /* MOBILE IOS BOXY SHADOW FIXES */
-    isolation: isolate; -webkit-backface-visibility: hidden; background-clip: padding-box; -webkit-transform: translate3d(0, 0, 0);
 }
 .phone-frame img { width: 100%; height: 100%; object-fit: cover; background-color: #111; }
 .slider-btn {
@@ -261,11 +273,10 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
     width: 100%; height: auto; border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 25px rgba(191, 149, 63, 0.2);
     animation: floatDevice 6s ease-in-out infinite; will-change: transform;
-    isolation: isolate; -webkit-backface-visibility: hidden; background-clip: padding-box; -webkit-transform: translate3d(0, 0, 0);
 }
 @keyframes floatDevice { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-.chipset { font-size: 1.2rem; letter-spacing: 2px; font-weight: 600; margin-top: 0.5rem; }
+.chipset { font-size: 1.2rem; letter-spacing: 2px; font-weight: 600; margin-top: 0.5rem; font-family: var(--font-sans); }
 .massive-title { font-size: clamp(1.8rem, 6vw, 3.5rem); margin-bottom: 1rem; line-height: 1.2; }
 .massive-btn { padding: 1.5rem 4rem; font-size: 1.25rem; }
 
@@ -274,7 +285,7 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
 .footer-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; }
 .footer-link { color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
 .footer-link:hover { color: var(--gold-champagne); }
-.copyright { margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted); opacity: 0.7; font-weight: 300; line-height: 1.8; }
+.copyright { margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted); opacity: 0.7; font-weight: 300; line-height: 1.8; font-family: var(--font-sans); }
 
 /* --- LOADER --- */
 .loader-container { position: fixed; inset: 0; background: var(--bg-black); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 1s ease, visibility 1s ease; }
@@ -304,7 +315,8 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
 }
 
 @media (max-width: 768px) {
-    .site-background { animation: none; background-position: center top; }
+    /* Swap background image specifically for mobile */
+    .site-background { animation: none; background-position: center top; background-image: url('assets/bg-mobile.jpg'); }
     
     .section-padding { padding: 4rem 0; }
     .container { padding: 0 1.25rem; }
@@ -327,15 +339,11 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
         padding: 0; gap: 0; border-bottom: 1px solid var(--glass-border);
         clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
         transition: clip-path 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s ease;
-        
-        /* Mobile Dropdown Shadow Fixes */
         border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
-        isolation: isolate; -webkit-transform: translate3d(0,0,0);
     }
     .nav-links.active {
         clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
-        padding: 1.5rem 0 2rem 0;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        padding: 1.5rem 0 2rem 0; box-shadow: 0 20px 40px rgba(0,0,0,0.8);
     }
     .nav-links a { font-size: 1.1rem; padding: 1rem 0; display: block; width: 100%; }
 
