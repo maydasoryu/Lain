@@ -1,10 +1,18 @@
 /* Made by mcysync (t.me/maydasoryu) | Project Lain 2k26 Rights Reserved */
 
-/* --- CUSTOM FONT IMPORT --- */
+/* --- CUSTOM LOCAL FONTS --- */
 @font-face {
     font-family: 'SamsungSharp';
-    src: url('font/Samsung-Sharp-Sans-Bold.ttf') format('truetype');
+    src: url('./font/Samsung-Sharp-Sans-Bold.ttf') format('truetype');
     font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'SamsungSans';
+    src: url('./font/SamsungSans-Regular.ttf') format('truetype');
+    font-weight: normal;
     font-style: normal;
     font-display: swap;
 }
@@ -25,7 +33,7 @@
     --glass-highlight: rgba(255, 255, 255, 0.05);
     
     --font-heading: 'SamsungSharp', sans-serif;
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-sans: 'SamsungSans', sans-serif;
     --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -52,11 +60,14 @@ html, body {
 .site-background {
     position: fixed; top: 0; left: 0; width: 100%; 
     height: 100vh; height: 100dvh; 
+    
+    /* Strict relative path formulation */
     background-color: var(--bg-black);
-    background-image: url('assets/bg.jpg');
+    background-image: url('./assets/bg.jpg');
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
+    
     z-index: -3; animation: bgParallax 40s infinite alternate linear; 
     will-change: transform;
 }
@@ -64,7 +75,7 @@ html, body {
 .site-background::after {
     content: ''; position: absolute; inset: 0;
     background: linear-gradient(to bottom, rgba(5,5,5,0.6) 0%, rgba(2,2,2,0.95) 100%);
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
 }
 
 @keyframes bgParallax { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
@@ -111,26 +122,21 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
 }
 @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-
-/* ======================================================= */
-/* --- BULLETPROOF MOBILE SHADOW FIX (IOS BLUR FIX)    --- */
-/* ======================================================= */
+/* --- DEEP GLASSMORPHISM PANELS & MOBILE SHADOW FIXES --- */
 .glass-panel {
     border: 1px solid var(--glass-border);
     border-top: 1px solid rgba(255, 255, 255, 0.15); border-left: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px; 
-    box-shadow: var(--glass-shadow); /* Shadow placed cleanly on parent */
-    padding: 2.5rem;
+    border-radius: 20px; box-shadow: var(--glass-shadow); padding: 2.5rem;
     transition: box-shadow 0.5s ease, border-color 0.5s ease;
-    position: relative; z-index: 1; transform-style: preserve-3d; will-change: transform;
-    background: transparent; /* Remove parent background */
+    position: relative; overflow: hidden; transform-style: preserve-3d; will-change: transform;
+    background: transparent;
+    
+    /* MOBILE IOS BOXY SHADOW FIXES */
+    isolation: isolate; -webkit-backface-visibility: hidden; background-clip: padding-box; -webkit-transform: translate3d(0, 0, 0);
 }
-/* Blur pushed into absolute layer to prevent WebKit square shadow bug */
 .glass-panel::after {
-    content: ''; position: absolute; inset: 0; z-index: -1;
-    border-radius: inherit; background: var(--glass-bg);
+    content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--glass-bg);
     backdrop-filter: blur(28px) saturate(130%); -webkit-backdrop-filter: blur(28px) saturate(130%);
-    -webkit-mask-image: -webkit-radial-gradient(white, black); /* Final safety force */
 }
 .glass-panel::before {
     content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
@@ -143,8 +149,6 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
     box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.9), 0 0 30px rgba(191, 149, 63, 0.15);
 }
 .glass-panel > * { transform: translateZ(30px); }
-/* ======================================================= */
-
 
 /* --- HEADER & MOBILE MENU --- */
 #navbar { position: fixed; top: 0; left: 0; width: 100%; padding: 1.5rem 0; z-index: 100; transition: var(--transition-smooth); }
@@ -169,7 +173,7 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
 .hero-section { height: 100vh; height: 100dvh; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; padding: 0 1.5rem; }
 .hero-title { font-size: clamp(2.5rem, 8vw, 5rem); letter-spacing: 4px; margin-bottom: 1.5rem; word-wrap: break-word; }
 .hero-divider { width: 80px; height: 2px; background: var(--gold-metallic); margin: 0 auto 2rem; }
-.hero-subtitle { font-size: clamp(1rem, 3vw, 1.25rem); color: var(--text-main); margin-bottom: 0.5rem; font-weight: 300; }
+.hero-subtitle { font-size: clamp(1rem, 3vw, 1.25rem); color: var(--text-main); margin-bottom: 0.5rem; }
 .hero-device { font-size: 1rem; color: var(--text-muted); margin-bottom: 3rem; }
 
 .hero-anim { opacity: 0; transform: translateY(30px); transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -189,10 +193,9 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
 .premium-btn::after {
     content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit;
     background: rgba(10, 10, 10, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 .premium-btn:hover {
-    transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 30px rgba(191, 149, 63, 0.3); border-color: var(--gold-champagne);
+    transform: translateY(-3px) scale(1.02) translateZ(0); box-shadow: 0 10px 30px rgba(191, 149, 63, 0.3); border-color: var(--gold-champagne);
 }
 .premium-btn:hover::after { background: rgba(191, 149, 63, 0.15); }
 .btn-shine {
@@ -230,6 +233,7 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
     width: 280px; height: 580px; background: #000; border-radius: 40px; border: 8px solid #222;
     box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 0 2px #444, 0 0 40px rgba(191, 149, 63, 0.1);
     overflow: hidden; transition: transform 0.4s ease; transform-style: preserve-3d;
+    isolation: isolate; -webkit-backface-visibility: hidden; background-clip: padding-box; -webkit-transform: translate3d(0, 0, 0);
 }
 .phone-frame img { width: 100%; height: 100%; object-fit: cover; background-color: #111; }
 .slider-btn {
@@ -273,6 +277,7 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
     width: 100%; height: auto; border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 25px rgba(191, 149, 63, 0.2);
     animation: floatDevice 6s ease-in-out infinite; will-change: transform;
+    isolation: isolate; -webkit-backface-visibility: hidden; background-clip: padding-box; -webkit-transform: translate3d(0, 0, 0);
 }
 @keyframes floatDevice { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
@@ -315,8 +320,8 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
 }
 
 @media (max-width: 768px) {
-    /* Swap background image specifically for mobile */
-    .site-background { animation: none; background-position: center top; background-image: url('assets/bg-mobile.jpg'); }
+    /* Swap background strictly for mobile */
+    .site-background { animation: none; background-position: center top; background-image: url('./assets/bg-mobile.jpg'); }
     
     .section-padding { padding: 4rem 0; }
     .container { padding: 0 1.25rem; }
@@ -340,6 +345,7 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
         clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
         transition: clip-path 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s ease;
         border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+        isolation: isolate; -webkit-transform: translate3d(0,0,0);
     }
     .nav-links.active {
         clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
