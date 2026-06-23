@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PROJECT LAIN | Premium Custom Firmware</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,297 +24,300 @@
     <!-- Scroll Progress Indicator -->
     <div class="scroll-progress" id="scroll-progress"></div>
 
-    <!-- Ambient Floating Particles -->
+    <!-- Fixed Backgrounds (Moved outside page-wrapper so they stay fixed properly) -->
     <canvas id="particles-canvas"></canvas>
-
-    <!-- Fixed Background -->
     <div class="site-background"></div>
 
-    <!-- Header / Navbar -->
-    <header id="navbar">
-        <div class="nav-container">
-            <a href="#" class="nav-logo shimmer-text">PROJECT LAIN</a>
-            
-            <!-- Mobile 3-Dots Menu Button -->
-            <button class="mobile-menu-btn" aria-label="Toggle Menu">
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-            </button>
+    <!-- PAGE WRAPPER: This absolutely guarantees no horizontal overflow on mobile -->
+    <div class="page-wrapper">
+        
+        <!-- Header / Navbar -->
+        <header id="navbar">
+            <div class="nav-container">
+                <a href="#" class="nav-logo shimmer-text">PROJECT LAIN</a>
+                
+                <!-- Mobile 3-Dots Menu Button -->
+                <button class="mobile-menu-btn" aria-label="Toggle Menu">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </button>
 
-            <nav class="nav-links">
-                <a href="#features">Features</a>
-                <a href="#screenshots">Showcase</a>
-                <a href="#changelog">Changelog</a>
-                <a href="#credits">Credits</a>
-            </nav>
-        </div>
-    </header>
-
-    <main>
-        <!-- Hero Section -->
-        <section id="hero" class="hero-section">
-            <div class="ambient-glow hero-glow-1"></div>
-            <div class="ambient-glow hero-glow-2"></div>
-            <div class="hero-content">
-                <h1 class="hero-title shimmer-text hero-anim">PROJECT LAIN</h1>
-                <div class="hero-divider hero-anim delay-1"></div>
-                <p class="hero-subtitle hero-anim delay-2">Work-in-progress custom firmware for Samsung Galaxy devices.</p>
-                <p class="hero-device hero-anim delay-3">Built specifically for Galaxy S20 FE Snapdragon (r8q).</p>
-                <a href="#features" class="premium-btn hero-btn hero-anim delay-4">
-                    <span class="btn-text">Explore Project</span>
-                    <div class="btn-shine"></div>
-                </a>
+                <nav class="nav-links">
+                    <a href="#features">Features</a>
+                    <a href="#screenshots">Showcase</a>
+                    <a href="#changelog">Changelog</a>
+                    <a href="#credits">Credits</a>
+                </nav>
             </div>
-        </section>
+        </header>
 
-        <!-- Project Overview -->
-        <section id="overview" class="overview-section section-padding position-relative">
-            <div class="container reveal">
-                <h2 class="section-title shimmer-text">Designed For Performance.<br>Built With Purpose.</h2>
-                <div class="glass-panel overview-panel interactive-tilt">
-                    <p>Project Lain is a work-in-progress custom firmware project designed specifically for Galaxy devices.</p>
-                    <p>Focused on refinement, stability, debloating, optimization, and long-term usability. Experience your device exactly as it was meant to be experienced—uncompromised and elevated.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Features Section -->
-        <section id="features" class="features-section section-padding position-relative">
-            <div class="ambient-glow feature-glow"></div>
-            <div class="container">
-                <h2 class="section-title shimmer-text reveal">Core Features</h2>
-                <div class="features-grid">
-                    <div class="feature-card glass-panel interactive-tilt reveal">
-                        <div class="feature-icon floating-icon">⚡</div>
-                        <h3>S23+ Foundation</h3>
-                        <p>Based on the latest S23+ firmware, bringing modern flagship capabilities.</p>
-                    </div>
-                    <div class="feature-card glass-panel interactive-tilt reveal delay-1">
-                        <div class="feature-icon floating-icon" style="animation-delay: 0.5s">✨</div>
-                        <h3>Galaxy AI Refined</h3>
-                        <p>Galaxy AI components removed, while Photo Editor AI is fully enabled.</p>
-                    </div>
-                    <div class="feature-card glass-panel interactive-tilt reveal delay-2">
-                        <div class="feature-icon floating-icon" style="animation-delay: 1s">🔥</div>
-                        <h3>Thermal Mastery</h3>
-                        <p>Overheating improvements and updated blobs from a73xqxx for peak stability.</p>
-                    </div>
-                    <div class="feature-card glass-panel interactive-tilt reveal">
-                        <div class="feature-icon floating-icon" style="animation-delay: 1.5s">🚀</div>
-                        <h3>Lain Surgical Debloat</h3>
-                        <p>Aggressively debloated for max performance, with Ryzen LTS updates applied.</p>
-                    </div>
-                    <div class="feature-card glass-panel interactive-tilt reveal delay-1">
-                        <div class="feature-icon floating-icon" style="animation-delay: 2s">🛡️</div>
-                        <h3>Security & Root</h3>
-                        <p>KernelSU Manager Support, Secure Flag Patch, and Knox Patch included.</p>
-                    </div>
-                    <div class="feature-card glass-panel interactive-tilt reveal delay-2">
-                        <div class="feature-icon floating-icon" style="animation-delay: 2.5s">📸</div>
-                        <h3>Camera & Display</h3>
-                        <p>Full Samsung Camera Support, Extra Brightness, and Adaptive Refresh Rate enabled.</p>
-                    </div>
-                </div>
-
-                <div class="feature-list glass-panel interactive-tilt reveal mt-4">
-                    <h3 class="list-title">Additional Enhancements</h3>
-                    <ul class="luxury-list">
-                        <li>Galaxy S25 Wallpapers Included</li>
-                        <li>Patched Stock Features & Libraries</li>
-                        <li>BT Library Patcher Included</li>
-                        <li>SELinux & VNDK Improvements</li>
-                        <li>Samsung DeX Support</li>
-                        <li>FBE v1 Compatibility Fixes</li>
-                        <li>Multi-User Support Enabled</li>
-                        <li>ASKS Disabled</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- Screenshots Showcase -->
-        <section id="screenshots" class="screenshots-section section-padding position-relative">
-            <div class="ambient-glow showcase-glow"></div>
-            <div class="container reveal">
-                <h2 class="section-title shimmer-text">Experience Project Lain</h2>
-                <div class="slider-container">
-                    <button class="slider-btn prev-btn" aria-label="Previous">&lsaquo;</button>
-                    <div class="slider-track" id="slider-track">
-                        <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot1.png" alt="Screenshot 1" loading="lazy"></div></div>
-                        <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot2.png" alt="Screenshot 2" loading="lazy"></div></div>
-                        <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot3.png" alt="Screenshot 3" loading="lazy"></div></div>
-                        <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot4.png" alt="Screenshot 4" loading="lazy"></div></div>
-                        <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot5.png" alt="Screenshot 5" loading="lazy"></div></div>
-                        <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot6.png" alt="Screenshot 6" loading="lazy"></div></div>
-                        <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot7.png" alt="Screenshot 7" loading="lazy"></div></div>
-                    </div>
-                    <button class="slider-btn next-btn" aria-label="Next">&rsaquo;</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Supporters Access -->
-        <section id="supporters" class="supporters-section section-padding">
-            <div class="container reveal">
-                <h2 class="section-title shimmer-text">Support Project Lain</h2>
-                <div class="pricing-card glass-panel interactive-tilt">
-                    <h3 class="pricing-tier shimmer-text">Exclusive Access</h3>
-                    <div class="pricing-price">Starting from $2</div>
-                    <ul class="pricing-benefits luxury-list">
-                        <li>◆ Early Beta Access</li>
-                        <li>◆ Premium Community Role</li>
-                        <li>◆ Instant Update Notifications</li>
-                        <li>◆ Priority Support</li>
-                        <li>◆ Community Voting Access</li>
-                    </ul>
-                    <a href="https://t.me/nihilupdates" target="_blank" rel="noopener noreferrer" class="premium-btn cta-btn">
-                        <span class="btn-text">Get Access</span>
+        <main>
+            <!-- Hero Section -->
+            <section id="hero" class="hero-section">
+                <div class="ambient-glow hero-glow-1"></div>
+                <div class="ambient-glow hero-glow-2"></div>
+                <div class="hero-content">
+                    <h1 class="hero-title shimmer-text hero-anim">PROJECT LAIN</h1>
+                    <div class="hero-divider hero-anim delay-1"></div>
+                    <p class="hero-subtitle hero-anim delay-2">Work-in-progress custom firmware for Samsung Galaxy devices.</p>
+                    <p class="hero-device hero-anim delay-3">Built specifically for Galaxy S20 FE Snapdragon (r8q).</p>
+                    <a href="#features" class="premium-btn hero-btn hero-anim delay-4">
+                        <span class="btn-text">Explore Project</span>
                         <div class="btn-shine"></div>
                     </a>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Installation Guide -->
-        <section id="installation" class="installation-section section-padding">
-            <div class="container reveal">
-                <h2 class="section-title shimmer-text">Installation Guide</h2>
-                
-                <div class="disclaimer-card glass-panel danger-border mb-4 interactive-tilt">
-                    <h3 class="danger-pulse">⚠️ Disclaimer</h3>
-                    <p><strong>Your warranty is now void.</strong></p>
-                    <p>We are not responsible for bricked devices, dead SD cards, thermonuclear war, or you getting fired because the alarm app failed. Please do some research if you have any concerns about flashing this ROM before flashing it. YOU are choosing to make these modifications, and if you point the finger at us for messing up your device, we will laugh at you. HARD!</p>
-                </div>
-
-                <div class="install-grid">
-                    <div class="install-card glass-panel interactive-tilt reveal">
-                        <h3>Bootloader Unlocking</h3>
-                        <ol class="step-list">
-                            <li>Enable Developer Options.</li>
-                            <li>Connect device to PC.</li>
-                            <li>Hold Volume Up + Volume Down.</li>
-                            <li>Enter Bootloader Unlock Mode.</li>
-                            <li>Press Volume Up to unlock.</li>
-                        </ol>
-                    </div>
-
-                    <div class="install-card glass-panel interactive-tilt reveal delay-1">
-                        <h3>ROM Installation</h3>
-                        <ol class="step-list">
-                            <li>Ensure latest stock firmware.</li>
-                            <li>OEM Unlock enabled.</li>
-                            <li>Download OFOX/TWRP and VBmeta.</li>
-                            <li>Enter Download Mode & Flash recovery through Odin.</li>
-                            <li>Disable Auto Reboot.</li>
-                            <li>Boot into recovery & Wipe partitions.</li>
-                            <li>Enable Sideload Mode & Sideload ROM.</li>
-                            <li>Format Data.</li>
-                            <li>Reboot & Enjoy.</li>
-                        </ol>
+            <!-- Project Overview -->
+            <section id="overview" class="overview-section section-padding position-relative">
+                <div class="container reveal">
+                    <h2 class="section-title shimmer-text">Designed For Performance.<br>Built With Purpose.</h2>
+                    <div class="glass-panel overview-panel interactive-tilt">
+                        <p>Project Lain is a work-in-progress custom firmware project designed specifically for Galaxy devices.</p>
+                        <p>Focused on refinement, stability, debloating, optimization, and long-term usability. Experience your device exactly as it was meant to be experienced—uncompromised and elevated.</p>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Changelog -->
-        <section id="changelog" class="changelog-section section-padding position-relative">
-            <div class="container">
-                <h2 class="section-title shimmer-text reveal">Latest Changes</h2>
-                <div class="timeline">
-                    <div class="timeline-item glass-panel interactive-tilt reveal">
-                        <div class="timeline-dot pulse-dot"></div>
-                        <h3>Project Lain Initial Build</h3>
-                        <p>Rebased on latest S23+ firmware. Added Lain Surgical Debloat and updated blobs from a73xqxx. Implemented FBE v1 Compatibility Fixes and Ryzen LTS Updates.</p>
+            <!-- Features Section -->
+            <section id="features" class="features-section section-padding position-relative">
+                <div class="ambient-glow feature-glow"></div>
+                <div class="container">
+                    <h2 class="section-title shimmer-text reveal">Core Features</h2>
+                    <div class="features-grid">
+                        <div class="feature-card glass-panel interactive-tilt reveal">
+                            <div class="feature-icon floating-icon">⚡</div>
+                            <h3>S23+ Foundation</h3>
+                            <p>Based on the latest S23+ firmware, bringing modern flagship capabilities.</p>
+                        </div>
+                        <div class="feature-card glass-panel interactive-tilt reveal delay-1">
+                            <div class="feature-icon floating-icon" style="animation-delay: 0.5s">✨</div>
+                            <h3>Galaxy AI Refined</h3>
+                            <p>Galaxy AI components removed, while Photo Editor AI is fully enabled.</p>
+                        </div>
+                        <div class="feature-card glass-panel interactive-tilt reveal delay-2">
+                            <div class="feature-icon floating-icon" style="animation-delay: 1s">🔥</div>
+                            <h3>Thermal Mastery</h3>
+                            <p>Overheating improvements and updated blobs from a73xqxx for peak stability.</p>
+                        </div>
+                        <div class="feature-card glass-panel interactive-tilt reveal">
+                            <div class="feature-icon floating-icon" style="animation-delay: 1.5s">🚀</div>
+                            <h3>Lain Surgical Debloat</h3>
+                            <p>Aggressively debloated for max performance, with Ryzen LTS updates applied.</p>
+                        </div>
+                        <div class="feature-card glass-panel interactive-tilt reveal delay-1">
+                            <div class="feature-icon floating-icon" style="animation-delay: 2s">🛡️</div>
+                            <h3>Security & Root</h3>
+                            <p>KernelSU Manager Support, Secure Flag Patch, and Knox Patch included.</p>
+                        </div>
+                        <div class="feature-card glass-panel interactive-tilt reveal delay-2">
+                            <div class="feature-icon floating-icon" style="animation-delay: 2.5s">📸</div>
+                            <h3>Camera & Display</h3>
+                            <p>Full Samsung Camera Support, Extra Brightness, and Adaptive Refresh Rate enabled.</p>
+                        </div>
                     </div>
-                    <div class="timeline-item glass-panel interactive-tilt reveal">
-                        <div class="timeline-dot pulse-dot" style="animation-delay: 0.5s"></div>
-                        <h3>Camera & Visuals Update</h3>
-                        <p>Full Samsung Camera support restored. Enabled Adaptive Refresh Rate and Extra Brightness support. Added Galaxy S25 Wallpapers.</p>
-                    </div>
-                    <div class="timeline-item glass-panel interactive-tilt reveal">
-                        <div class="timeline-dot pulse-dot" style="animation-delay: 1s"></div>
-                        <h3>Security & Performance</h3>
-                        <p>Added KernelSU Manager support, Secure Flag Patch, and Knox Patch. Disabled ASKS and applied SELinux & VNDK improvements.</p>
+
+                    <div class="feature-list glass-panel interactive-tilt reveal mt-4">
+                        <h3 class="list-title">Additional Enhancements</h3>
+                        <ul class="luxury-list">
+                            <li>Galaxy S25 Wallpapers Included</li>
+                            <li>Patched Stock Features & Libraries</li>
+                            <li>BT Library Patcher Included</li>
+                            <li>SELinux & VNDK Improvements</li>
+                            <li>Samsung DeX Support</li>
+                            <li>FBE v1 Compatibility Fixes</li>
+                            <li>Multi-User Support Enabled</li>
+                            <li>ASKS Disabled</li>
+                        </ul>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Supported Device -->
-        <section id="device" class="device-section section-padding position-relative">
-            <div class="ambient-glow device-glow-orb"></div>
-            <div class="container reveal">
-                <h2 class="section-title shimmer-text">Supported Device</h2>
-                <div class="device-card glass-panel interactive-tilt">
-                    <div class="device-image-container">
-                        <img src="assets/devices/s20fe.jpeg" alt="Samsung Galaxy S20 FE" class="device-render">
-                    </div>
-                    <div class="device-info text-center">
-                        <h3>Samsung Galaxy S20 FE</h3>
-                        <p class="chipset shimmer-text">Snapdragon (r8q)</p>
-                    </div>
-                    <div class="device-glow"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Credits & Acknowledgments -->
-        <section id="credits" class="credits-section section-padding position-relative">
-            <div class="ambient-glow credits-glow"></div>
-            <div class="container">
-                <h2 class="section-title shimmer-text reveal">Credits</h2>
-                <div class="credits-grid">
-                    <div class="credit-card glass-panel interactive-tilt reveal">
-                        <div class="credit-role">Founder & Lead</div>
-                        <h3 class="credit-name">@donottellmyname</h3>
-                        <p>For this amazing project.</p>
-                    </div>
-                    <div class="credit-card glass-panel interactive-tilt reveal delay-1">
-                        <div class="credit-role">UN1CA Patches</div>
-                        <h3 class="credit-name">@salvogiangri</h3>
-                        <p>For essential framework patches.</p>
-                    </div>
-                    <div class="credit-card glass-panel interactive-tilt reveal delay-2">
-                        <div class="credit-role">Base Kernel</div>
-                        <h3 class="credit-name">@ata_kaner</h3>
-                        <p>For the highly optimized base kernel.</p>
-                    </div>
-                    <div class="credit-card glass-panel interactive-tilt reveal delay-3">
-                        <div class="credit-role">Website Design</div>
-                        <h3 class="credit-name">@mcysync</h3>
-                        <a href="https://t.me/maydasoryu" target="_blank" rel="noopener noreferrer" class="credit-link">t.me/maydasoryu</a>
+            <!-- Screenshots Showcase -->
+            <section id="screenshots" class="screenshots-section section-padding position-relative">
+                <div class="ambient-glow showcase-glow"></div>
+                <div class="container reveal">
+                    <h2 class="section-title shimmer-text">Experience Project Lain</h2>
+                    <div class="slider-container">
+                        <button class="slider-btn prev-btn" aria-label="Previous">&lsaquo;</button>
+                        <div class="slider-track" id="slider-track">
+                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot1.png" alt="Screenshot 1" loading="lazy"></div></div>
+                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot2.png" alt="Screenshot 2" loading="lazy"></div></div>
+                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot3.png" alt="Screenshot 3" loading="lazy"></div></div>
+                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot4.png" alt="Screenshot 4" loading="lazy"></div></div>
+                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot5.png" alt="Screenshot 5" loading="lazy"></div></div>
+                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot6.png" alt="Screenshot 6" loading="lazy"></div></div>
+                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot7.png" alt="Screenshot 7" loading="lazy"></div></div>
+                        </div>
+                        <button class="slider-btn next-btn" aria-label="Next">&rsaquo;</button>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Final CTA -->
-        <section class="final-cta-section section-padding text-center">
-            <div class="container reveal">
-                <h2 class="massive-title shimmer-text">Ready To Experience Project Lain?</h2>
-                <p class="cta-subtitle">Refined. Optimized. Purposefully Built.</p>
-                <a href="https://t.me/nihilupdates" target="_blank" rel="noopener noreferrer" class="premium-btn massive-btn mt-4">
-                    <span class="btn-text">Get Access Now</span>
-                    <div class="btn-shine"></div>
-                </a>
-            </div>
-        </section>
-    </main>
+            <!-- Supporters Access -->
+            <section id="supporters" class="supporters-section section-padding">
+                <div class="container reveal">
+                    <h2 class="section-title shimmer-text">Support Project Lain</h2>
+                    <div class="pricing-card glass-panel interactive-tilt">
+                        <h3 class="pricing-tier shimmer-text">Exclusive Access</h3>
+                        <div class="pricing-price">Starting from $2</div>
+                        <ul class="pricing-benefits luxury-list">
+                            <li>◆ Early Beta Access</li>
+                            <li>◆ Premium Community Role</li>
+                            <li>◆ Instant Update Notifications</li>
+                            <li>◆ Priority Support</li>
+                            <li>◆ Community Voting Access</li>
+                        </ul>
+                        <a href="https://t.me/nihilupdates" target="_blank" rel="noopener noreferrer" class="premium-btn cta-btn">
+                            <span class="btn-text">Get Access</span>
+                            <div class="btn-shine"></div>
+                        </a>
+                    </div>
+                </div>
+            </section>
 
-    <!-- Footer -->
-    <footer class="site-footer glass-panel">
-        <div class="container footer-content">
-            <div class="footer-left">
-                <h3 class="footer-logo shimmer-text">PROJECT LAIN</h3>
-                <p>Samsung Galaxy S20 FE Snapdragon (r8q)</p>
-                <p class="copyright">Project Lain 2k26 © Reserved Rights</p>
+            <!-- Installation Guide -->
+            <section id="installation" class="installation-section section-padding">
+                <div class="container reveal">
+                    <h2 class="section-title shimmer-text">Installation Guide</h2>
+                    
+                    <div class="disclaimer-card glass-panel danger-border mb-4 interactive-tilt">
+                        <h3 class="danger-pulse">⚠️ Disclaimer</h3>
+                        <p><strong>Your warranty is now void.</strong></p>
+                        <p>We are not responsible for bricked devices, dead SD cards, thermonuclear war, or you getting fired because the alarm app failed. Please do some research if you have any concerns about flashing this ROM before flashing it. YOU are choosing to make these modifications, and if you point the finger at us for messing up your device, we will laugh at you. HARD!</p>
+                    </div>
+
+                    <div class="install-grid">
+                        <div class="install-card glass-panel interactive-tilt reveal">
+                            <h3>Bootloader Unlocking</h3>
+                            <ol class="step-list">
+                                <li>Enable Developer Options.</li>
+                                <li>Connect device to PC.</li>
+                                <li>Hold Volume Up + Volume Down.</li>
+                                <li>Enter Bootloader Unlock Mode.</li>
+                                <li>Press Volume Up to unlock.</li>
+                            </ol>
+                        </div>
+
+                        <div class="install-card glass-panel interactive-tilt reveal delay-1">
+                            <h3>ROM Installation</h3>
+                            <ol class="step-list">
+                                <li>Ensure latest stock firmware.</li>
+                                <li>OEM Unlock enabled.</li>
+                                <li>Download OFOX/TWRP and VBmeta.</li>
+                                <li>Enter Download Mode & Flash recovery through Odin.</li>
+                                <li>Disable Auto Reboot.</li>
+                                <li>Boot into recovery & Wipe partitions.</li>
+                                <li>Enable Sideload Mode & Sideload ROM.</li>
+                                <li>Format Data.</li>
+                                <li>Reboot & Enjoy.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Changelog -->
+            <section id="changelog" class="changelog-section section-padding position-relative">
+                <div class="container">
+                    <h2 class="section-title shimmer-text reveal">Latest Changes</h2>
+                    <div class="timeline">
+                        <div class="timeline-item glass-panel interactive-tilt reveal">
+                            <div class="timeline-dot pulse-dot"></div>
+                            <h3>Project Lain Initial Build</h3>
+                            <p>Rebased on latest S23+ firmware. Added Lain Surgical Debloat and updated blobs from a73xqxx. Implemented FBE v1 Compatibility Fixes and Ryzen LTS Updates.</p>
+                        </div>
+                        <div class="timeline-item glass-panel interactive-tilt reveal">
+                            <div class="timeline-dot pulse-dot" style="animation-delay: 0.5s"></div>
+                            <h3>Camera & Visuals Update</h3>
+                            <p>Full Samsung Camera support restored. Enabled Adaptive Refresh Rate and Extra Brightness support. Added Galaxy S25 Wallpapers.</p>
+                        </div>
+                        <div class="timeline-item glass-panel interactive-tilt reveal">
+                            <div class="timeline-dot pulse-dot" style="animation-delay: 1s"></div>
+                            <h3>Security & Performance</h3>
+                            <p>Added KernelSU Manager support, Secure Flag Patch, and Knox Patch. Disabled ASKS and applied SELinux & VNDK improvements.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Supported Device -->
+            <section id="device" class="device-section section-padding position-relative">
+                <div class="ambient-glow device-glow-orb"></div>
+                <div class="container reveal">
+                    <h2 class="section-title shimmer-text">Supported Device</h2>
+                    <div class="device-card glass-panel interactive-tilt">
+                        <div class="device-image-container">
+                            <img src="assets/devices/s20fe.jpeg" alt="Samsung Galaxy S20 FE" class="device-render">
+                        </div>
+                        <div class="device-info text-center">
+                            <h3>Samsung Galaxy S20 FE</h3>
+                            <p class="chipset shimmer-text">Snapdragon (r8q)</p>
+                        </div>
+                        <div class="device-glow"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Credits & Acknowledgments -->
+            <section id="credits" class="credits-section section-padding position-relative">
+                <div class="ambient-glow credits-glow"></div>
+                <div class="container">
+                    <h2 class="section-title shimmer-text reveal">Credits</h2>
+                    <div class="credits-grid">
+                        <div class="credit-card glass-panel interactive-tilt reveal">
+                            <div class="credit-role">Founder & Lead</div>
+                            <h3 class="credit-name">@donottellmyname</h3>
+                            <p>For this amazing project.</p>
+                        </div>
+                        <div class="credit-card glass-panel interactive-tilt reveal delay-1">
+                            <div class="credit-role">UN1CA Patches</div>
+                            <h3 class="credit-name">@salvogiangri</h3>
+                            <p>For essential framework patches.</p>
+                        </div>
+                        <div class="credit-card glass-panel interactive-tilt reveal delay-2">
+                            <div class="credit-role">Base Kernel</div>
+                            <h3 class="credit-name">@ata_kaner</h3>
+                            <p>For the highly optimized base kernel.</p>
+                        </div>
+                        <div class="credit-card glass-panel interactive-tilt reveal delay-3">
+                            <div class="credit-role">Website Design</div>
+                            <h3 class="credit-name">@mcysync</h3>
+                            <a href="https://t.me/maydasoryu" target="_blank" rel="noopener noreferrer" class="credit-link">t.me/maydasoryu</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Final CTA -->
+            <section class="final-cta-section section-padding text-center">
+                <div class="container reveal">
+                    <h2 class="massive-title shimmer-text">Ready To Experience Project Lain?</h2>
+                    <p class="cta-subtitle">Refined. Optimized. Purposefully Built.</p>
+                    <a href="https://t.me/nihilupdates" target="_blank" rel="noopener noreferrer" class="premium-btn massive-btn mt-4">
+                        <span class="btn-text">Get Access Now</span>
+                        <div class="btn-shine"></div>
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="site-footer glass-panel">
+            <div class="container footer-content">
+                <div class="footer-left">
+                    <h3 class="footer-logo shimmer-text">PROJECT LAIN</h3>
+                    <p>Samsung Galaxy S20 FE Snapdragon (r8q)</p>
+                    <p class="copyright">Project Lain 2k26 © Reserved Rights</p>
+                </div>
+                <div class="footer-right">
+                    <a href="https://t.me/nihilupdates" target="_blank" rel="noopener noreferrer" class="footer-link">Telegram Updates</a>
+                </div>
             </div>
-            <div class="footer-right">
-                <a href="https://t.me/nihilupdates" target="_blank" rel="noopener noreferrer" class="footer-link">Telegram Updates</a>
-            </div>
-        </div>
-    </footer>
+        </footer>
+
+    </div> <!-- End Page Wrapper -->
 
     <script type="module" src="script.js"></script>
 </body>

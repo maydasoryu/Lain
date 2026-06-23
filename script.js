@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 3D TILT EFFECT FOR PREMIUM GLASS PANELS ---
     const tiltElements = document.querySelectorAll('.interactive-tilt');
     
+    // Only apply on non-touch devices for performance and usability
     if (window.matchMedia("(pointer: fine)").matches) {
         tiltElements.forEach(el => {
             el.addEventListener('mousemove', e => {
