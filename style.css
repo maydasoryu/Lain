@@ -40,12 +40,12 @@
 /* --- GLOBAL RESET & OVERFLOW FIXES --- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* FIX: Split html and body to ensure the body's solid background color doesn't hide negative z-index elements */
+/* Transparent body fix ensures the negative z-index background shows up */
 html {
     background-color: var(--bg-black); 
 }
 body {
-    background-color: transparent; /* Changed from solid black to transparent */
+    background-color: transparent; 
     color: var(--text-main);
     font-family: var(--font-sans); line-height: 1.6;
     overflow-x: hidden; width: 100%; max-width: 100%;
@@ -67,9 +67,9 @@ body {
     position: fixed; top: 0; left: 0; width: 100%; 
     height: 100vh; height: 100dvh; 
     
-    /* Strict relative path formulation */
+    /* PC / Desktop Background loads here by default */
     background-color: var(--bg-black);
-    background-image: url('assets/bg.jpg'); /* FIX: Removed leading ./ to ensure absolute path matching */
+    background-image: url('./assets/bg.jpg');
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -325,9 +325,17 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
     .features-grid, .install-grid, .credits-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
 }
 
+/* ========================================================= */
+/* --- MOBILE SPECIFIC BACKGROUND OVERRIDE                 --- */
+/* ========================================================= */
 @media (max-width: 768px) {
-    /* Swap background strictly for mobile */
-    .site-background { animation: none; background-position: center top; background-image: url('assets/bg-mobile.jpg'); } /* FIX: Cleaned path up */
+    
+    /* STRICT MOBILE BACKGROUND FIX: Forces bg-mobile.jpg and overrides desktop entirely */
+    .site-background { 
+        animation: none !important; 
+        background-position: center top !important; 
+        background-image: url('./assets/bg-mobile.jpg') !important; 
+    }
     
     .section-padding { padding: 4rem 0; }
     .container { padding: 0 1.25rem; }
