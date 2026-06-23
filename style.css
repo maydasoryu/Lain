@@ -39,8 +39,14 @@
 
 /* --- GLOBAL RESET & OVERFLOW FIXES --- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body {
-    background-color: var(--bg-black); color: var(--text-main);
+
+/* FIX: Split html and body to ensure the body's solid background color doesn't hide negative z-index elements */
+html {
+    background-color: var(--bg-black); 
+}
+body {
+    background-color: transparent; /* Changed from solid black to transparent */
+    color: var(--text-main);
     font-family: var(--font-sans); line-height: 1.6;
     overflow-x: hidden; width: 100%; max-width: 100%;
     -webkit-font-smoothing: antialiased; scroll-behavior: smooth;
@@ -63,7 +69,7 @@ html, body {
     
     /* Strict relative path formulation */
     background-color: var(--bg-black);
-    background-image: url('./assets/bg.jpg');
+    background-image: url('assets/bg.jpg'); /* FIX: Removed leading ./ to ensure absolute path matching */
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -321,7 +327,7 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
 
 @media (max-width: 768px) {
     /* Swap background strictly for mobile */
-    .site-background { animation: none; background-position: center top; background-image: url('./assets/bg-mobile.jpg'); }
+    .site-background { animation: none; background-position: center top; background-image: url('assets/bg-mobile.jpg'); } /* FIX: Cleaned path up */
     
     .section-padding { padding: 4rem 0; }
     .container { padding: 0 1.25rem; }
