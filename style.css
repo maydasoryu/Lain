@@ -1,3 +1,5 @@
+/* Made by mcysync (t.me/maydasoryu) | Project Lain 2k26 Rights Reserved */
+
 /* --- LUXURY THEME VARIABLES --- */
 :root {
     --bg-black: #050505;
@@ -28,21 +30,20 @@ html, body {
 }
 
 /* Page wrapper acts as a cage for all negative absolute positions (orbs) */
-.page-wrapper {
-    position: relative; width: 100%; overflow: hidden;
-}
+.page-wrapper { position: relative; width: 100%; overflow: hidden; }
 
 ::selection { background: var(--gold-base); color: var(--bg-black); }
 .position-relative { position: relative; z-index: 1; }
 .text-center { text-align: center; }
 .mt-4 { margin-top: 2rem; }
 .mb-4 { margin-bottom: 2rem; }
+.inline { display: inline-block; padding: 0; }
 
 /* --- BACKGROUND ADAPTIVE --- */
 .site-background {
     position: fixed; top: 0; left: 0; width: 100%; 
     height: 100vh; height: 100dvh; 
-    background: url('assets/bg.jpeg') center center / cover no-repeat;
+    background: url('assets/bg.jpg') center center / cover no-repeat;
     z-index: -3; animation: bgParallax 40s infinite alternate linear; 
     will-change: transform;
 }
@@ -97,7 +98,7 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
 }
 @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-/* --- DEEP GLASSMORPHISM PANELS --- */
+/* --- DEEP GLASSMORPHISM PANELS & MOBILE SHADOW FIXES --- */
 .glass-panel {
     background: var(--glass-bg);
     backdrop-filter: blur(28px) saturate(130%); -webkit-backdrop-filter: blur(28px) saturate(130%);
@@ -106,6 +107,13 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
     border-radius: 20px; box-shadow: var(--glass-shadow); padding: 2.5rem;
     transition: box-shadow 0.5s ease, border-color 0.5s ease;
     position: relative; overflow: hidden; transform-style: preserve-3d; will-change: transform;
+    
+    /* MOBILE IOS BOXY SHADOW FIXES */
+    isolation: isolate;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -webkit-transform: translate3d(0, 0, 0);
+    background-clip: padding-box;
 }
 .glass-panel::before {
     content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
@@ -159,9 +167,10 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
     border-radius: 30px; color: var(--gold-champagne); text-decoration: none;
     font-weight: 600; font-size: 1rem; letter-spacing: 1px; position: relative; overflow: hidden;
     transition: var(--transition-smooth); cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); white-space: nowrap;
+    isolation: isolate; -webkit-transform: translate3d(0, 0, 0); background-clip: padding-box;
 }
 .premium-btn:hover {
-    transform: translateY(-3px) scale(1.02); background: rgba(191, 149, 63, 0.15);
+    transform: translateY(-3px) scale(1.02) translateZ(0); background: rgba(191, 149, 63, 0.15);
     box-shadow: 0 10px 30px rgba(191, 149, 63, 0.3); border-color: var(--gold-champagne);
 }
 .btn-shine {
@@ -199,6 +208,9 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
     width: 280px; height: 580px; background: #000; border-radius: 40px; border: 8px solid #222;
     box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 0 2px #444, 0 0 40px rgba(191, 149, 63, 0.1);
     overflow: hidden; transition: transform 0.4s ease; transform-style: preserve-3d;
+    
+    /* MOBILE IOS BOXY SHADOW FIXES */
+    isolation: isolate; -webkit-backface-visibility: hidden; background-clip: padding-box; -webkit-transform: translate3d(0, 0, 0);
 }
 .phone-frame img { width: 100%; height: 100%; object-fit: cover; }
 .slider-btn {
@@ -242,6 +254,7 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
     width: 100%; height: auto; border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 25px rgba(191, 149, 63, 0.2);
     animation: floatDevice 6s ease-in-out infinite; will-change: transform;
+    isolation: isolate; -webkit-backface-visibility: hidden; background-clip: padding-box; -webkit-transform: translate3d(0, 0, 0);
 }
 @keyframes floatDevice { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
@@ -254,7 +267,7 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
 .footer-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; }
 .footer-link { color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
 .footer-link:hover { color: var(--gold-champagne); }
-.copyright { margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted); opacity: 0.7; font-weight: 300; }
+.copyright { margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted); opacity: 0.7; font-weight: 300; line-height: 1.8; }
 
 /* --- LOADER --- */
 .loader-container { position: fixed; inset: 0; background: var(--bg-black); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 1s ease, visibility 1s ease; }
@@ -303,10 +316,14 @@ h2.section-title { font-size: clamp(2rem, 5vw, 2.5rem); text-align: center; marg
     .nav-links {
         position: absolute; top: 100%; left: 0; width: 100%;
         flex-direction: column; text-align: center;
-        background: rgba(5, 5, 5, 0.98); backdrop-filter: blur(30px);
+        background: rgba(5, 5, 5, 0.98); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
         padding: 0; gap: 0; border-bottom: 1px solid var(--glass-border);
-        clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); /* Hidden */
+        clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
         transition: clip-path 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s ease;
+        
+        /* Mobile Dropdown Shadow Fixes */
+        border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+        isolation: isolate; -webkit-transform: translate3d(0,0,0);
     }
     .nav-links.active {
         clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);

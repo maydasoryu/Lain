@@ -1,3 +1,5 @@
+/* Made by mcysync (t.me/maydasoryu) | Project Lain 2k26 Rights Reserved */
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- LOADING SCREEN ---
