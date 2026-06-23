@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PROJECT LAIN | Premium Custom Firmware</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -143,12 +143,13 @@
                     <div class="slider-container">
                         <button class="slider-btn prev-btn" aria-label="Previous">&lsaquo;</button>
                         <div class="slider-track" id="slider-track">
-                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot1.jpg" alt="Screenshot 1" loading="lazy"></div></div>
-                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot2.jpeg" alt="Screenshot 2" loading="lazy"></div></div>
-                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot3.jpg" alt="Screenshot 3" loading="lazy"></div></div>
-                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot4.jpg" alt="Screenshot 4" loading="lazy"></div></div>
-                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot5.jpg" alt="Screenshot 5" loading="lazy"></div></div>
-                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="images/screenshot6.jpg" alt="Screenshot 6" loading="lazy"></div></div>
+                            <!-- EXPLICIT RELATIVE PATHS USED HERE ./images/... -->
+                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="./images/screenshot1.jpg" alt="Screenshot 1" loading="lazy"></div></div>
+                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="./images/screenshot2.jpeg" alt="Screenshot 2" loading="lazy"></div></div>
+                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="./images/screenshot3.jpg" alt="Screenshot 3" loading="lazy"></div></div>
+                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="./images/screenshot4.jpg" alt="Screenshot 4" loading="lazy"></div></div>
+                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="./images/screenshot5.jpg" alt="Screenshot 5" loading="lazy"></div></div>
+                            <div class="slide"><div class="phone-frame interactive-tilt"><img src="./images/screenshot6.jpg" alt="Screenshot 6" loading="lazy"></div></div>
                         </div>
                         <button class="slider-btn next-btn" aria-label="Next">&rsaquo;</button>
                     </div>
@@ -249,7 +250,7 @@
                     <h2 class="section-title shimmer-text">Supported Device</h2>
                     <div class="device-card glass-panel interactive-tilt">
                         <div class="device-image-container">
-                            <img src="assets/devices/s20fe.jpeg" alt="Samsung Galaxy S20 FE" class="device-render">
+                            <img src="./assets/devices/s20fe.jpeg" alt="Samsung Galaxy S20 FE" class="device-render">
                         </div>
                         <div class="device-info text-center">
                             <h3>Samsung Galaxy S20 FE</h3>
@@ -314,6 +315,6 @@
 
     </div> <!-- End Page Wrapper -->
 
-    <script type="module" src="script.js"></script>
+    <script type="module" src="./script.js"></script>
 </body>
 </html>
