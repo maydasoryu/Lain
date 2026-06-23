@@ -32,11 +32,14 @@ body {
 .mt-4 { margin-top: 2rem; }
 .mb-4 { margin-bottom: 2rem; }
 
-/* --- BACKGROUND & DYNAMIC LIGHTING --- */
+/* --- BACKGROUND ADAPTIVE --- */
 .site-background {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    position: fixed; top: 0; left: 0; width: 100vw; 
+    height: 100vh; /* Fallback */
+    height: 100dvh; /* Dynamic viewport for mobile browsers */
     background: url('assets/bg.jpeg') center center / cover no-repeat;
-    z-index: -3; animation: bgParallax 40s infinite alternate linear; will-change: transform;
+    z-index: -3; animation: bgParallax 40s infinite alternate linear; 
+    will-change: transform;
 }
 
 .site-background::after {
@@ -68,7 +71,7 @@ body {
     100% { transform: translate(-30px, 30px) scale(0.9); opacity: 0.2; }
 }
 
-#particles-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; pointer-events: none; }
+#particles-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; z-index: -2; pointer-events: none; }
 
 /* --- TYPOGRAPHY & CONTINUOUS ANIMATIONS --- */
 h1, h2, h3, .nav-logo, .loader-logo, .footer-logo { font-family: var(--font-serif); font-weight: 600; }
@@ -111,21 +114,27 @@ h2.section-title { font-size: 2.5rem; text-align: center; margin-bottom: 3rem; }
 }
 .glass-panel > * { transform: translateZ(30px); }
 
-/* --- HEADER --- */
+/* --- HEADER & MOBILE MENU --- */
 #navbar { position: fixed; top: 0; left: 0; width: 100%; padding: 1.5rem 0; z-index: 100; transition: var(--transition-smooth); }
 #navbar.scrolled {
-    padding: 1rem 0; background: rgba(5, 5, 5, 0.6);
+    padding: 1rem 0; background: rgba(5, 5, 5, 0.8);
     backdrop-filter: blur(24px) saturate(120%); -webkit-backdrop-filter: blur(24px) saturate(120%);
     border-bottom: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);
 }
-.nav-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
-.nav-logo { font-size: 1.5rem; text-decoration: none; letter-spacing: 2px; }
+.nav-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; position: relative; }
+.nav-logo { font-size: 1.5rem; text-decoration: none; letter-spacing: 2px; position: relative; z-index: 101; }
 .nav-links { display: flex; gap: 2rem; }
 .nav-links a { color: var(--text-main); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s; }
 .nav-links a:hover { color: var(--gold-champagne); }
 
+.mobile-menu-btn {
+    display: none; background: transparent; border: none; cursor: pointer;
+    gap: 5px; padding: 10px; z-index: 101; align-items: center;
+}
+.mobile-menu-btn .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold-champagne); transition: 0.3s ease; }
+
 /* --- HERO SECTION --- */
-.hero-section { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; }
+.hero-section { height: 100vh; height: 100dvh; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; padding: 0 1.5rem; }
 .hero-title { font-size: 5vw; letter-spacing: 8px; margin-bottom: 1.5rem; }
 .hero-divider { width: 80px; height: 2px; background: var(--gold-metallic); margin: 0 auto 2rem; }
 .hero-subtitle { font-size: 1.25rem; color: var(--text-main); margin-bottom: 0.5rem; font-weight: 300; }
@@ -223,19 +232,13 @@ h2.section-title { font-size: 2.5rem; text-align: center; margin-bottom: 3rem; }
 
 /* --- DEVICE RENDER IMAGE --- */
 .device-card { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; padding: 4rem 2rem; }
-.device-image-container {
-    width: 220px; margin-bottom: 2.5rem; position: relative; z-index: 2;
-}
+.device-image-container { width: 220px; margin-bottom: 2.5rem; position: relative; z-index: 2; }
 .device-render {
     width: 100%; height: auto; border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 25px rgba(191, 149, 63, 0.2);
-    animation: floatDevice 6s ease-in-out infinite;
-    will-change: transform;
+    animation: floatDevice 6s ease-in-out infinite; will-change: transform;
 }
-@keyframes floatDevice {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
-}
+@keyframes floatDevice { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
 .chipset { font-size: 1.2rem; letter-spacing: 2px; font-weight: 600; margin-top: 0.5rem; }
 .massive-title { font-size: 3.5rem; margin-bottom: 1rem; }
@@ -267,24 +270,70 @@ h2.section-title { font-size: 2.5rem; text-align: center; margin-bottom: 3rem; }
 .delay-2 { transition-delay: 0.3s; }
 .delay-3 { transition-delay: 0.45s; }
 
-/* --- RESPONSIVE --- */
-@media (max-width: 768px) {
-    .nav-links { display: none; }
-    .hero-title { font-size: 3rem; }
-    h2.section-title { font-size: 2rem; }
-    .massive-title { font-size: 2.5rem; }
-    .section-padding { padding: 4rem 0; }
-    .timeline { padding-left: 20px; }
-    .timeline::before { left: 10px; }
-    .timeline-item { margin-left: 40px; }
-    .pulse-dot { left: -37px; }
-    .footer-content { flex-direction: column; text-align: center; }
-    .phone-frame { width: 240px; height: 500px; }
+/* ========================================================= */
+/* --- MOBILE OPTIMIZATION & RESPONSIVENESS (THE FIXES) ---  */
+/* ========================================================= */
+
+@media (max-width: 900px) {
+    .features-grid, .install-grid, .credits-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
 }
+
+@media (max-width: 768px) {
+    /* Background Adaptation */
+    .site-background { animation: none; background-position: center top; }
+    
+    /* Typography & Spacing scaling */
+    .hero-title { font-size: 3rem; }
+    .hero-subtitle { font-size: 1.1rem; }
+    h2.section-title { font-size: 2rem; margin-bottom: 2rem; }
+    .massive-title { font-size: 2.2rem; }
+    .section-padding { padding: 4rem 0; }
+    .container { padding: 0 1.5rem; }
+    .glass-panel { padding: 1.5rem; }
+
+    /* Single Column Grids to prevent overflow */
+    .features-grid, .install-grid, .credits-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+
+    /* Mobile 3-Dots Menu */
+    .mobile-menu-btn { display: flex; flex-direction: row; }
+    .mobile-menu-btn.active .dot { background: var(--gold-base); transform: scale(1.2); }
+    
+    .nav-links {
+        position: absolute; top: 100%; left: 0; width: 100%;
+        flex-direction: column; text-align: center;
+        background: rgba(5, 5, 5, 0.98); backdrop-filter: blur(30px);
+        padding: 0; gap: 0; border-bottom: 1px solid var(--glass-border);
+        clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); /* Hidden */
+        transition: clip-path 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s ease;
+    }
+    .nav-links.active {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        padding: 1.5rem 0 2rem 0;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+    }
+    .nav-links a { font-size: 1.1rem; padding: 1rem 0; display: block; width: 100%; }
+
+    /* Timeline Mobile Fix */
+    .timeline { padding-left: 10px; }
+    .timeline::before { left: 5px; }
+    .timeline-item { margin-left: 30px; }
+    .pulse-dot { left: -32px; width: 12px; height: 12px; top: 32px; }
+
+    /* Slider Fixes */
+    .phone-frame { width: 220px; height: 460px; border-width: 6px; border-radius: 30px; }
+    .slider-btn { width: 45px; height: 45px; font-size: 1.5rem; }
+    .prev-btn { left: 0px; } .next-btn { right: 0px; }
+
+    /* Device Image Fix */
+    .device-image-container { width: 160px; }
+
+    /* Footer Fix */
+    .footer-content { flex-direction: column; text-align: center; gap: 1rem; }
+}
+
 @media (max-width: 480px) {
     .hero-title { font-size: 2.5rem; }
-    .glass-panel { padding: 1.5rem; }
-    .phone-frame { width: 200px; height: 420px; }
-    .slider-btn { width: 40px; height: 40px; font-size: 1.5rem; }
-    .device-image-container { width: 180px; }
+    .hero-btn { padding: 0.8rem 2rem; }
+    .phone-frame { width: 180px; height: 380px; border-width: 4px; border-radius: 25px; }
+    .slider-btn { width: 35px; height: 35px; font-size: 1.2rem; }
 }

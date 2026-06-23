@@ -27,6 +27,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- MOBILE MENU (3 DOTS) TOGGLE ---
+    const mobileBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+
+    if(mobileBtn && navLinks) {
+        mobileBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileBtn.classList.toggle('active');
+        });
+
+        // Close menu when a link is clicked
+        const navItems = document.querySelectorAll('.nav-links a');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileBtn.classList.remove('active');
+            });
+        });
+    }
+
     // --- SMOOTH SCROLLING ---
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
@@ -96,41 +116,43 @@ document.addEventListener('DOMContentLoaded', () => {
         track.style.transform = `translateX(-${currentIndex * 100}%)`;
     }
 
-    nextBtn.addEventListener('click', () => {
-        currentIndex = (currentIndex < slides.length - 1) ? currentIndex + 1 : 0;
-        updateSliderPosition();
-    });
+    if(nextBtn && prevBtn && track) {
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex < slides.length - 1) ? currentIndex + 1 : 0;
+            updateSliderPosition();
+        });
 
-    prevBtn.addEventListener('click', () => {
-        currentIndex = (currentIndex > 0) ? currentIndex - 1 : slides.length - 1;
-        updateSliderPosition();
-    });
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex > 0) ? currentIndex - 1 : slides.length - 1;
+            updateSliderPosition();
+        });
 
-    track.addEventListener('touchstart', e => {
-        startX = e.touches[0].clientX;
-        isDragging = true;
-        track.style.transition = 'none';
-    });
+        track.addEventListener('touchstart', e => {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+            track.style.transition = 'none';
+        }, {passive: true});
 
-    track.addEventListener('touchmove', e => {
-        if (!isDragging) return;
-        const currentX = e.touches[0].clientX;
-        const diff = currentX - startX;
-        const slideWidth = track.clientWidth;
-        currentTranslate = -(currentIndex * slideWidth) + diff;
-        track.style.transform = `translateX(${currentTranslate}px)`;
-    });
+        track.addEventListener('touchmove', e => {
+            if (!isDragging) return;
+            const currentX = e.touches[0].clientX;
+            const diff = currentX - startX;
+            const slideWidth = track.clientWidth;
+            currentTranslate = -(currentIndex * slideWidth) + diff;
+            track.style.transform = `translateX(${currentTranslate}px)`;
+        }, {passive: true});
 
-    track.addEventListener('touchend', e => {
-        isDragging = false;
-        const diff = e.changedTouches[0].clientX - startX;
-        track.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
-        if (Math.abs(diff) > 50) {
-            if (diff > 0 && currentIndex > 0) currentIndex--;
-            else if (diff < 0 && currentIndex < slides.length - 1) currentIndex++;
-        }
-        updateSliderPosition();
-    });
+        track.addEventListener('touchend', e => {
+            isDragging = false;
+            const diff = e.changedTouches[0].clientX - startX;
+            track.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
+            if (Math.abs(diff) > 50) {
+                if (diff > 0 && currentIndex > 0) currentIndex--;
+                else if (diff < 0 && currentIndex < slides.length - 1) currentIndex++;
+            }
+            updateSliderPosition();
+        });
+    }
 
     // --- INTERACTIVE AMBIENT PARTICLES ---
     const canvas = document.getElementById('particles-canvas');
